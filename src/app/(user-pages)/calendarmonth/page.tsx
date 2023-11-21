@@ -1,4 +1,4 @@
-import  CalendarMonthView  from '@/components/calendar/CalendarMonthView';
+import  CalendarMonthView  from '@/components/monthcalendar/CalendarMonthView';
 
 export default function CalendarMonthPage() {
 
