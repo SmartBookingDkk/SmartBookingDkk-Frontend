@@ -2,10 +2,12 @@ import React from 'react';
 import getISOWeek from 'date-fns/getISOWeek';
 import startOfMonth from 'date-fns/startOfMonth';
 import endOfMonth from 'date-fns';
+import DayInMonth from './dayInMonth/DayInMonth';
+import startOfWeek from 'date-fns/startOfWeek';
 
 
 const CalendarMonthView = () => {
-    const daysinWeek: string[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const daysinWeek: string[] = ['Mandag', 'Tirdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
     const currentDate = new Date();
     const firstDayOfMonth:Date = new Date(currentDate.getFullYear(), currentDate.getMonth(),1,1);
     const lastDayOfMonth:Date = new Date(currentDate.getFullYear(), currentDate.getMonth()+1);
@@ -14,29 +16,30 @@ const CalendarMonthView = () => {
     const numberOfWeeksInMonth:number = getISOWeek(lastDayOfMonth) - getISOWeek(firstDayOfMonth) + 1;
 
     
-    //const numberOfWeeksInMonth:number =
     
     
     
-    console.log(getISOWeek(firstDayOfMonth));
-    console.log(firstDayOfMonth.toISOString());
-    console.log(lastDayOfMonth.toISOString());
-    console.log(getISOWeek(lastDayOfMonth));
-    console.log(getISOWeek(firstDayOfMonth));
-    console.log(numberOfWeeksInMonth);
-    //console.log(endOfMonth(currentDate));
+    
+    
 
 
     const generateCalenderGrid = (firstWeekOfMonth:number,firstDayOfMonth:Date,lastWeekOfMonth:number) => {
-        const rows = [];
-        
-        rows.push(generateWeekDays());
-        let firstDayToMap:Date = firstDayOfMonth;
+        console.log("New run")
 
+        const startDateOfWeek = startOfWeek(firstDayOfMonth, {weekStartsOn: 1});
+        startDateOfWeek.setHours(startDateOfWeek.getHours() + 1);
+        
+
+        const rows = [];
+        rows.push(generateWeekDays());
+        let firstDayToMap:Date = startDateOfWeek
+        console.log(firstDayToMap)
         for (let i = firstWeekOfMonth; i <= lastWeekOfMonth; i++) {
-        rows.push(generateWeeksOfMonth(firstWeekOfMonth,firstDayToMap))
-        firstDayToMap = new Date(firstDayToMap.getFullYear(), firstDayToMap.getMonth(), firstDayToMap.getDate()+7);
-        firstWeekOfMonth++;
+            rows.push(generateWeeksOfMonth(i,firstDayToMap))
+            console.log("Først setDate= ", firstDayToMap);
+            
+            console.log("Efter setDate= ", firstDayToMap);
+
         }
 
 
@@ -52,12 +55,17 @@ const CalendarMonthView = () => {
         )
     }
 
-    const generateWeeksOfMonth = (firstWeekOfMonth:number,firstDayToMap:Date) => {
+    const generateWeeksOfMonth = (firstWeekOfMonth:number,firstDateToMap:Date) => {
+    
         const cells = [];
         cells.push(<div key="weekNumber" className='font-bold text-center'>{firstWeekOfMonth}</div>);
         for (let i = 0; i < 7; i++) {
-            cells.push(<div key={i} className='font-bold text-center'>{firstDayToMap.getDate()}</div>);
-            firstDayToMap.setDate(firstDayToMap.getDate()+1);
+            const dateToMap = new Date(firstDateToMap)
+            cells.push(
+            <div key={i}>
+                <DayInMonth dateToMap={dateToMap} isDateInMonth={firstDayOfMonth.getMonth()==dateToMap.getMonth()}/>
+            </div>);
+            firstDateToMap.setDate(firstDateToMap.getDate()+1);
         }
         return cells;
     }
