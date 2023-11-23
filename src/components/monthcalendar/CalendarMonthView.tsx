@@ -9,7 +9,7 @@ import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 
 const daysinWeek: string[] = ['Mandag', 'Tirdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
 const monthsInYear: string[] = ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'];
-const currentDate = new Date('December 2, 2029, 02:00:00');
+const currentDate = new Date('January, 2027, 02:00:00');
 const CalendarMonthView = () => {
     
     // An object used to set certain values for calculating the calender grid. Updates when the month is changed and renders the page
@@ -109,17 +109,21 @@ const CalendarMonthView = () => {
     let startWeek = dateInfo.firstWeekOfMonth;
     
 
-    if (dateInfo.lastWeekOfMonth === 1) {
+    if (dateInfo.lastWeekOfMonth === 1) { //Virker med December som slutter med uge 1
        endWeek = dateInfo.firstWeekOfMonth + numbersOfWeeksInMonth;
-    } else if (dateInfo.lastWeekOfMonth === 53) {
-        endWeek = endWeek;
+    } else if (dateInfo.firstWeekOfMonth === 53 || dateInfo.firstWeekOfMonth === 52) { //Virker med Januar som starter med uge 52 og 53
+        startWeek = 0;
     }
 
     for (let i = startWeek; i <= endWeek; i++) {
+        if (i === 54) {
+            break;
+        }
         rows.push(generateDatesOfMonth(i, firstDayOfWeekToMap));
     }
 
-
+    console.log("Start week: " + startWeek);
+    console.log("End week: " + endWeek);
         return rows;
     }
 
