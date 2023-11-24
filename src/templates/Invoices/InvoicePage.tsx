@@ -4,34 +4,39 @@ const InvoicePage = () => {
   return (
     <div>
 
-      <div className='h-2/5 flex justify-between'>
+      <div className='flex justify-around m-10'>
 
-        <div className='bg-gray-400 flex flex-col'>
-          <h2 className=''>Daglig Omsætning</h2>
-          <div className='border'>
-            <h3 className='p-6 h-[400px]'>6969 Dkk,-</h3>
+        <div className='h-[120px] w-[220px] border border-gray-300 rounded-lg shadow-md flex flex-col items-center justify-center'>
+          <h2 className='font-semibold text-[20px] mb-4'>Daglig Omsætning</h2>
+          <div>
+            <h3 className='text-[18px]'>6969 Dkk,-</h3>
           </div>
         </div>
 
-        <div>
-          <h2>Ugentlig Omsætning</h2>
+        <div className='h-[120px] w-[220px] border border-gray-300 rounded-lg shadow-md flex flex-col items-center justify-center'>
+          <h2 className='font-semibold text-[20px] mb-4'>Ugentlig Omsætning</h2>
+          <div>
+            <h3 className='text-[18px]'>6969 Dkk,-</h3>
+          </div>
         </div>
 
-        <div>
-          <h2>Månedlig Omsætning</h2>
+        <div className='h-[120px] w-[220px] border border-gray-300 rounded-lg shadow-md flex flex-col items-center justify-center'>
+          <h2 className='font-semibold text-[20px] mb-4'>Månedlig Omsætning</h2>
+          <div>
+            <h3 className='text-[18px]'>6969 Dkk,-</h3>
+          </div>
         </div>
 
-        <div>
-          <h2>Årlig Omsætning</h2>
+        <div className='h-[120px] w-[220px] border border-gray-300 rounded-lg shadow-md flex flex-col items-center justify-center'>
+          <h2 className='font-semibold text-[20px] mb-4'>Årlig Omsætning</h2>
+          <div>
+            <h3 className='text-[18px]'>6969 Dkk,-</h3>
+          </div>
         </div>
       </div>
 
-
-
-
-
-
     </div>
+    
   )
 
 }
