@@ -9,11 +9,11 @@ import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 
 const daysinWeek: string[] = ['Mandag', 'Tirdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
 const monthsInYear: string[] = ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'];
-const currentDate = new Date('January, 2027, 02:00:00');
+const currentDate = new Date('December 2, 2025, 02:00:00');
 const CalendarMonthView = () => {
 
     // An object used to set certain values for calculating the calender grid. Updates when the month is changed and renders the page
-    const [dateInfo, setDateInfo] = useState({
+    const [monthInfo, setMonthInfo] = useState({
         monthsInYearIndex: currentDate.getMonth(),
         firstDayOfMonth: startOfMonth(currentDate),
         firstWeekOfMonth: getISOWeek(startOfMonth(currentDate)),
@@ -25,7 +25,7 @@ const CalendarMonthView = () => {
     * @param monthSwapValue is the value that is added to the current month index, to swap the month
     */
     function handleChangeMonthClick(monthSwapValue: number) {
-        setDateInfo(prevDateInfo => {
+        setMonthInfo(prevDateInfo => {
             const newDate = new Date(prevDateInfo.firstDayOfMonth.getTime());
             newDate.setMonth(newDate.getMonth() + monthSwapValue);
 
@@ -48,6 +48,20 @@ const CalendarMonthView = () => {
         )
     }
 
+    function calculateStartAndEndWeeks(monthInfo: any, numbersOfWeeksInMonth: number) {
+        let startWeek = monthInfo.firstWeekOfMonth;
+        let endWeek = monthInfo.lastWeekOfMonth;
+    
+        if (monthInfo.lastWeekOfMonth === 1) {
+            endWeek = monthInfo.firstWeekOfMonth + numbersOfWeeksInMonth;
+        } else if (monthInfo.firstWeekOfMonth === 53 || monthInfo.firstWeekOfMonth === 52) {
+            startWeek = 0;
+        }
+    
+        return { startWeek, endWeek };
+    }
+
+
     /**
     * Does the whole generation of the calender grid
     * @param firstWeekOfMonth 
@@ -57,23 +71,26 @@ const CalendarMonthView = () => {
     */
     const generateCalenderGrid = () => {
         const rows = [];
-        const startDateOfWeek = startOfWeek(dateInfo.firstDayOfMonth, { weekStartsOn: 1 });
+        const startDateOfWeek = startOfWeek(monthInfo.firstDayOfMonth, { weekStartsOn: 1 });
         startDateOfWeek.setHours(startDateOfWeek.getHours() + 1);
-        const lastDayOfMonth: Date = new Date(dateInfo.firstDayOfMonth.getFullYear(), dateInfo.firstDayOfMonth.getMonth() + 1, 0, 23, 59, 59, 999);
+        const lastDayOfMonth: Date = new Date(monthInfo.firstDayOfMonth.getFullYear(), monthInfo.firstDayOfMonth.getMonth() + 1, 0, 23, 59, 59, 999);
         const numbersOfWeeksInMonth = getWeeksInMonth(startDateOfWeek);
         let firstDayOfWeekToMap: Date = startDateOfWeek;
 
         rows.push(generateWeekDays());
 
+        
+        const { startWeek, endWeek } = calculateStartAndEndWeeks(monthInfo, numbersOfWeeksInMonth);
 
-        let startWeek = dateInfo.firstWeekOfMonth;
+        /*
+        let startWeek = monthInfo.firstWeekOfMonth;
         let endWeek: number = getISOWeek(lastDayOfMonth);
 
-        if (dateInfo.lastWeekOfMonth === 1) { //Virker med December som slutter med uge 1
-            endWeek = dateInfo.firstWeekOfMonth + numbersOfWeeksInMonth;
-        } else if (dateInfo.firstWeekOfMonth === 53 || dateInfo.firstWeekOfMonth === 52) { //Virker med Januar som starter med uge 52 og 53
+        if (monthInfo.lastWeekOfMonth === 1) { //Virker med December som slutter med uge 1
+            endWeek = monthInfo.firstWeekOfMonth + numbersOfWeeksInMonth;
+        } else if (monthInfo.firstWeekOfMonth === 53 || monthInfo.firstWeekOfMonth === 52) { //Virker med Januar som starter med uge 52 og 53
             startWeek = 0;
-        }
+        }*/
 
         for (let i = startWeek; i <= endWeek; i++) {
             if (i === 54) {
@@ -108,7 +125,7 @@ const CalendarMonthView = () => {
             const nextDateToMap = new Date(dateToMap)
             cells.push(
                 <div key={i}>
-                    <DayInMonth dateToMap={nextDateToMap} isDateInMonth={dateInfo.firstDayOfMonth.getMonth() == nextDateToMap.getMonth()} />
+                    <DayInMonth dateToMap={nextDateToMap} isDateInMonth={monthInfo.firstDayOfMonth.getMonth() == nextDateToMap.getMonth()} />
                 </div>);
             dateToMap.setDate(dateToMap.getDate() + 1);
         }
@@ -126,7 +143,7 @@ const CalendarMonthView = () => {
             <div onClick={() => handleChangeMonthClick(1)}
                 className='p-2 absolute'>{"->"}</div>
             <br></br>
-            <div className='p-2 flex-item text-center font-bold'>{monthsInYear[dateInfo.monthsInYearIndex] + ' ' + dateInfo.firstDayOfMonth.getFullYear()}</div>
+            <div className='p-2 flex-item text-center font-bold'>{monthsInYear[monthInfo.monthsInYearIndex] + ' ' + monthInfo.firstDayOfMonth.getFullYear()}</div>
 
             <div className={`grid grid-cols-8 `}>
                 {generateCalenderGrid()}
