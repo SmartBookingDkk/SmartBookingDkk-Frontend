@@ -48,6 +48,13 @@ const CalendarMonthView = () => {
         )
     }
 
+
+    /**
+     * Calculates the correct values for startWeek and endWeek for the loop
+     * @param monthInfo 
+     * @param numbersOfWeeksInMonth 
+     * @returns startWeek and endWeek values
+     */
     function calculateStartAndEndWeeks(monthInfo: any, numbersOfWeeksInMonth: number) {
         let startWeek = monthInfo.firstWeekOfMonth;
         let endWeek = monthInfo.lastWeekOfMonth;
@@ -63,10 +70,8 @@ const CalendarMonthView = () => {
 
 
     /**
-    * Does the whole generation of the calender grid
-    * @param firstWeekOfMonth 
-    * @param firstDayOfMonth 
-    * @param lastWeekOfMonth 
+    * Does the whole calculation and rendering of the calender grid.
+    * @monthInfo is used for setting certain values in the the function. monthInfo is updated every month swap.
     * @returns Returns the whole calender grid. 2D JSX.Element array, with days, weeks and date-components inside
     */
     const generateCalenderGrid = () => {
@@ -78,19 +83,8 @@ const CalendarMonthView = () => {
         let firstDayOfWeekToMap: Date = startDateOfWeek;
 
         rows.push(generateWeekDays());
-
         
         const { startWeek, endWeek } = calculateStartAndEndWeeks(monthInfo, numbersOfWeeksInMonth);
-
-        /*
-        let startWeek = monthInfo.firstWeekOfMonth;
-        let endWeek: number = getISOWeek(lastDayOfMonth);
-
-        if (monthInfo.lastWeekOfMonth === 1) { //Virker med December som slutter med uge 1
-            endWeek = monthInfo.firstWeekOfMonth + numbersOfWeeksInMonth;
-        } else if (monthInfo.firstWeekOfMonth === 53 || monthInfo.firstWeekOfMonth === 52) { //Virker med Januar som starter med uge 52 og 53
-            startWeek = 0;
-        }*/
 
         for (let i = startWeek; i <= endWeek; i++) {
             if (i === 54) {
@@ -102,23 +96,32 @@ const CalendarMonthView = () => {
         return rows;
     }
 
+
     /**
-    * @param firstWeekOfMonth is required for pushing the weeknumber in the array
-    * @param firstDateToMap is required to map the first day in a week
-    * @param lastWeekOfMonth is required for push the weeknumber when december ends with week 1
-    * @returns Returns 1 row array, 8 columns long. first cell is weekNumber, the rest are mon-sun DayInMonth-components.
-    */
+     * @returns the correct weeknumber value to display in the calender
+     */
+    function weekToMapDecider(weekToMap: number, dateToMap: Date) {
+        if (weekToMap === 0 && getISOWeek(dateToMap) === 52) {
+            return 52;
+        } else if (weekToMap === 0 && getISOWeek(dateToMap) === 53) {
+            return 53;
+        } else if (weekToMap === 53 && getISOWeek(dateToMap) === 1) {
+            return 1;
+        } else {
+            return weekToMap;
+        }
+    }
+
+
+    /**
+     * @param weekToMap 
+     * @param dateToMap 
+     * @returns Returns 1 row array, 8 columns long. first cell is weekNumber, the rest are mon-sun DayInMonth-components. JSX.Element[]
+     */
     const generateDatesOfMonth = (weekToMap: number, dateToMap: Date) => {
         const cells = [];
-        if (weekToMap === 0 && getISOWeek(dateToMap) === 52) {
-            cells.push(<div key="weekNumber" className='font-bold text-center'>{52}</div>);
-        } else if (weekToMap === 0 && getISOWeek(dateToMap) === 53) {
-            cells.push(<div key="weekNumber" className='font-bold text-center'>{53}</div>);
-        } else if (weekToMap === 53 && getISOWeek(dateToMap) === 1) {
-            cells.push(<div key="weekNumber" className='font-bold text-center'>{1}</div>);
-        } else {
-            cells.push(<div key="weekNumber" className='font-bold text-center'>{weekToMap}</div>);
-        }
+
+        cells.push(<div key="weekNumber" className='font-bold text-center'>{weekToMapDecider(weekToMap,dateToMap)}</div>);
 
         for (let i = 0; i < 7; i++) {
 
