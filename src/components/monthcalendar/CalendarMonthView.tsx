@@ -9,7 +9,8 @@ import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 
 const daysinWeek: string[] = ['Mandag', 'Tirdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
 const monthsInYear: string[] = ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'];
-const currentDate = new Date('December 2, 2025, 02:00:00');
+//const currentDate = new Date('December 2, 2025, 02:00:00');
+const currentDate = new Date();
 const CalendarMonthView = () => {
 
     // An object used to set certain values for calculating the calender grid. Updates when the month is changed and renders the page
