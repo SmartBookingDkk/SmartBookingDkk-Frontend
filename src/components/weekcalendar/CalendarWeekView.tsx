@@ -6,6 +6,7 @@ import endOfMonth from 'date-fns/endOfMonth';
 import startOfMonth from 'date-fns/startOfMonth';
 import addDays from 'date-fns/addDays';
 import { endOfWeek } from 'date-fns';
+import { addWeeks } from 'date-fns';
 
 const daysInWeek: string[] = ['Mandag', 'Tirdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
 const monthsInYear: string[] = ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'];
@@ -58,7 +59,7 @@ const CalendarWeekView = () => {
     */
 function handleChangeWeekClick(weekSwap: number) {
   setWeekInfo(prevWeekInfo => {
-      const newDate = new Date(prevWeekInfo.firstDayOfWeek.getTime());
+    const newDate = addWeeks(prevWeekInfo.firstDayOfWeek, weekSwap);
       console.log("newDate before swap: ", newDate)
       newDate.setDate(newDate.getDate() + weekSwap)
       console.log("newDate after swap: ", newDate)
@@ -80,10 +81,10 @@ function handleChangeWeekClick(weekSwap: number) {
 return (
   <div className='min-w-full'>
     <div className='flex flex-row justify-center gap-8'>
-      <div onClick={() => handleChangeWeekClick(-7)}>{"<-"}  Forrige uge</div>
+      <div onClick={() => handleChangeWeekClick(-1)}>{"<-"}  Forrige uge</div>
       <div className=''>{'Uge ' + weekInfo.weekNumber + ' // ' + monthsInYear[weekInfo.monthsInYearIndex]
       + '  ' +weekInfo.firstDayOfWeek.getFullYear()}</div>
-      <div onClick={() => handleChangeWeekClick(7)}>Næste uge {"->"}</div>
+      <div onClick={() => handleChangeWeekClick(1)}>Næste uge {"->"}</div>
     </div>
 
     <table className="min-w-full border border-collapse border-gray-300">
