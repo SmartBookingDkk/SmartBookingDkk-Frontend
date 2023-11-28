@@ -7,6 +7,7 @@ import startOfMonth from 'date-fns/startOfMonth';
 import addDays from 'date-fns/addDays';
 import { endOfWeek } from 'date-fns';
 import { addWeeks } from 'date-fns';
+import getDay from 'date-fns/getDay';
 
 const daysInWeek: string[] = ['Mandag', 'Tirdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
 const monthsInYear: string[] = ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'];
@@ -17,27 +18,17 @@ const openHour: number = 10;
 const closingHour: number = 18;
 const timeSlotSize: number = 15;
 
-const CalendarWeekView = () => {
+const CalendarDayView = () => {
         
         console.log("Current date:= ", currentDate)
           
-        function getWeekDays(startOfCurrentWeek:Date){
-          const weekDays:Date[] = [];
-          for (let i = 1; i <= 7; i++) {
-            weekDays.push(addDays(startOfCurrentWeek, i));
-          }
-          console.log(weekDays);
-          return weekDays;
-        }
+      
 
-
-        const [weekInfo, setWeekInfo] = useState({
+        const [dayInfo, setDayInfo] = useState({
                 monthsInYearIndex: currentDate.getMonth(),
-                firstDayOfWeek: startOfWeek(currentDate),
-                lastDayOfWeek: endOfWeek(currentDate),
+                currentDay: currentDate,
                 weekNumber: getISOWeek(currentDate),
-                lastWeekOfMonth: getISOWeek(endOfMonth(startOfMonth(currentDate))),
-                weekDays: getWeekDays(startOfWeek(currentDate))
+                dayNumberInWeek: getDay(currentDate)
         });
 
 
@@ -57,22 +48,15 @@ const CalendarWeekView = () => {
     * Function that handles the click on the arrows to change the month
     * @param monthSwapValue is the value that is added to the current month index, to swap the month
     */
-function handleChangeWeekClick(weekSwap: number) {
-  setWeekInfo(prevWeekInfo => {
-    const newDate = addWeeks(prevWeekInfo.firstDayOfWeek, weekSwap);
-      console.log("newDate before swap: ", newDate)
-      newDate.setDate(newDate.getDate() + weekSwap)
-      console.log("newDate after swap: ", newDate)
-      console.log("before swap weekNumber=",prevWeekInfo.weekNumber)
-      console.log("after swap weekNumber=",getISOWeek(newDate))
-      console.log(getISOWeek(newDate));
+function handleChangeDayClick(daySwap: number) {
+  setDayInfo(prevDayInfo => {
+    const newDate = addDays(prevDayInfo.currentDay, daySwap);
       return {
           monthsInYearIndex: newDate.getMonth(),
-          firstDayOfWeek: startOfWeek(newDate),
-          lastDayOfWeek: endOfWeek(newDate),
+          currentDay: newDate,
           weekNumber: getISOWeek(newDate),
-          lastWeekOfMonth: getISOWeek(endOfMonth(startOfMonth(newDate))),
-          weekDays: getWeekDays(startOfWeek(newDate))
+          dayNumberInWeek: getDay(newDate)
+          
       };
   });
 }
@@ -81,32 +65,27 @@ function handleChangeWeekClick(weekSwap: number) {
 return (
   <div className='min-w-full'>
     <div className='flex flex-row justify-center gap-8'>
-      <div onClick={() => handleChangeWeekClick(-1)}>{"<-"}  Forrige uge</div>
-      <div className=''>{'Uge ' + weekInfo.weekNumber + ' // ' + monthsInYear[weekInfo.monthsInYearIndex]
-      + '  ' +weekInfo.firstDayOfWeek.getFullYear()}</div>
-      <div onClick={() => handleChangeWeekClick(1)}>Næste uge {"->"}</div>
+      <div onClick={() => handleChangeDayClick(-1)}>{"<-"}  Forrige dag</div>
+      <div className=''>{'Uge ' + dayInfo.weekNumber + ' // ' + monthsInYear[dayInfo.monthsInYearIndex]
+      + '  ' +dayInfo.currentDay.getFullYear()}</div>
+      <div onClick={() => handleChangeDayClick(1)}>Næste dag {"->"}</div>
     </div>
 
     <table className="min-w-full border border-collapse border-gray-300">
       <thead className=''>
         <tr>
           <th className="p-2 border">Time</th>
-          {weekInfo.weekDays.map((day, index) => (
-            <th key={index} className="p-2 border">
-              {daysInWeek[index] + ' '+ day.getDate() + '/' + (day.getMonth()+1)}
-            </th>
-          ))}
+          
+          <th className="p-2 border">
+              {daysInWeek[dayInfo.dayNumberInWeek] + ' '+ dayInfo.currentDay.getDate() + '/' + (dayInfo.currentDay.getMonth()+1)}
+          </th>
         </tr>
       </thead>
       <tbody>
         {timeSlots.map(time => (
           <tr key={time}>
             <td className="border-collapse border-black h-6  text-right">{time.endsWith(':00') ? time : ''}</td>
-            {weekInfo.weekDays.map(day => (
-              <td key={`${day}-${time}`} className="border h-6">
-                {/* Booking stuff goez heere! */}
-              </td>
-            ))}
+            <td className="border border-black h-6"></td>
           </tr>
         ))}
       </tbody>
@@ -117,4 +96,4 @@ return (
            
     }
             
-export default CalendarWeekView;
+export default CalendarDayView;
