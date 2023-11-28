@@ -17,6 +17,6 @@ const DashboardSidebarProvider = ({ children }: any) => {
     );
 };
 
-export const useAdminSidebar = () => useContext(DashboardSidebarContext);
+export const useDashboardSidebar = () => useContext(DashboardSidebarContext);
 
 export default DashboardSidebarProvider;
