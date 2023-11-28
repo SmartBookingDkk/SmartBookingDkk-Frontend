@@ -24,7 +24,7 @@ const MyProfilePage = () => {
     return (
         <div>
             <h1>Mine Oplysninger</h1>
-           {user && <ProfileForm user={user} setUser={setUser} />}
+           {user && <ProfileForm customer={user} setCustomer={setUser} />}
         </div>
     )
 }
