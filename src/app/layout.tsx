@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { NextUIProvider } from "@nextui-org/react";
-import { ResponsiveProvider } from '@/contexts/MediaQueryContext'
+import { Providers } from '@/components/Providers/Providers'
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -20,11 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NextUIProvider>
-          <ResponsiveProvider>
-            {children}
-          </ResponsiveProvider>
-        </NextUIProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   )

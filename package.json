@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@nextui-org/input": "^2.1.16",
     "@nextui-org/react": "^2.2.9",
     "cookie": "^0.6.0",
     "framer-motion": "^10.16.5",
