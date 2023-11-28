@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import DashboardLayout from '@/layouts/DashboardLayout'
+import { ResponsiveProvider } from '@/contexts/MediaQueryContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,6 +16,7 @@ export default function DashboardPanelLayout({
   children: React.ReactNode
 }) {
   return (
+
     <DashboardLayout>
       {children}
     </DashboardLayout>

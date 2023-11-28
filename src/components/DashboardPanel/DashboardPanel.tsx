@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import DashboardNavbar from './DashboardNavbar/DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar/DashboardSidebar';
-import { useAdminSidebar } from '@/contexts/DashboardSidebarContext';
+import { useDashboardSidebar } from '@/contexts/DashboardSidebarContext';
 
 
 
@@ -14,7 +14,7 @@ type DashboardProps = {
 
 
 const DashboardPanel = ({ children }: DashboardProps) => {
-  const { sidebarOpen, setSidebarOpen } = useAdminSidebar();
+  const { sidebarOpen, setSidebarOpen } = useDashboardSidebar();
 
   useEffect(() => {
     const storedSidebarOpen = localStorage.getItem('sidebarOpen');

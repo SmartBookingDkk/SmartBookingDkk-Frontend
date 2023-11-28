@@ -35,6 +35,12 @@ const DashboardSidebar = ({ sidebarOpen }: DashboardSidebarProps) => {
               <li className='my-4 py-2 hover:cursor-pointer hover:bg-gray-200 text-center' >Fakturaer</li>
             </a>
 
+            <a href='/dashboard/my-profile'>
+              <li className='my-4 py-2 hover:cursor-pointer hover:bg-gray-200 text-center'>
+                Min profil
+              </li>
+            </a>
+
             <a href='/dashboard/business-settings'>
               <li className='my-4 py-2 hover:cursor-pointer hover:bg-gray-200 text-center' >Min Virksomhed</li>
             </a>
