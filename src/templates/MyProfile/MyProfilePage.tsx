@@ -10,7 +10,7 @@ const MyProfilePage = () => {
 
     useEffect(() => {
         (async () => {
-            const response = await fetch(`http://localhost:8080/customer/4`, {
+            const response = await fetch(`http://localhost:8080/customer/5`, {
                 credentials: 'include',
               });
 

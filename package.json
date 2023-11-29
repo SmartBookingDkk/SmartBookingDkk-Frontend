@@ -9,7 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+<<<<<<< Updated upstream
     "@nextui-org/input": "^2.1.16",
+=======
+    "@auth0/auth0-react": "^2.2.3",
+    "@nextui-org/react": "^2.2.9",
+>>>>>>> Stashed changes
     "cookie": "^0.6.0",
     "next": "14.0.3",
     "react": "^18",
