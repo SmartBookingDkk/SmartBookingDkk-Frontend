@@ -1,6 +1,7 @@
 import { Customer } from "@/types/Customer";
 import { AddressInput } from "./InputContainers/AddressInput";
 import { PersonalInput } from "./InputContainers/PersonalInput";
+import { Divider } from "@nextui-org/react";
 
 interface ProfileFormProps {
     user: Customer;
@@ -38,10 +39,9 @@ const ProfileForm = ({ user, setUser }: ProfileFormProps) => {
             <PersonalInput user={user} setUser={setUser} />
 
             <AddressInput user={user} setUser={setUser} />
-            
             <div className="flex justify-center m-8">
-                <button className="btn-primary capitalize" type="submit">gem mine ændringer</button>
-            </div>
+                <button className="btn-primary capitalize mb-8" type="submit">gem mine ændringer</button>
+            </div>        
         </form>
     )
 }
