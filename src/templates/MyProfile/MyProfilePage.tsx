@@ -9,10 +9,11 @@ const MyProfilePage = () => {
     const [user, setUser] = useState<Customer | null>(null);
 
     useEffect(() => {
+        console.log("fetching");
         (async () => {
             const response = await fetch(`http://localhost:8080/customer/4`, {
                 credentials: 'include',
-              });
+            });
 
             if (!response.ok) return;
             const data = await response.json();
@@ -23,8 +24,9 @@ const MyProfilePage = () => {
 
     return (
         <div>
-            <h1>Mine Oplysninger</h1>
-           {user && <ProfileForm customer={user} setCustomer={setUser} />}
+            <h1 className="text-[24px] text-center uppercase font-semibold">mine oplysninger</h1>
+            {user && <ProfileForm user={user} setUser={setUser} />}
+            
         </div>
     )
 }
