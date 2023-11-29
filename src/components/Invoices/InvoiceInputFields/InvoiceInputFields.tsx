@@ -17,8 +17,6 @@ const InvoiceInputFields = ({invoiceAmount, invoicePrice, invoiceDiscount, invoi
     setInvoiceAmount, setInvoicePrice, setInvoiceDiscount, setInvoiceVAT}: InvoiceInputFieldsProps) => {
 
    
-
-    console.log("Invoice amount: ", invoiceAmount, "Invoice Price: ", invoicePrice, "InvoiceDiscount: ", invoiceDiscount, "Invoice isVat: ", invoiceVAT)
     return (
         <>
             <div className="flex py-2 px-1 justify-around">
