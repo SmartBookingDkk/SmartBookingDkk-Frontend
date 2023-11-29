@@ -89,7 +89,9 @@ const CreateInvoiceButton = () => {
                                         setInvoiceVAT={setInvoiceVAT}
                                     />
                                     <div className='flex justify-center my-4'>
-                                        <button className='hover:scale-110 hover:opacity-100 text-[25px] opacity-60'><FiPlusCircle /></button>
+                                        <button className='transform ease-in-out duration-300 hover:scale-110 hover:opacity-100 text-[25px] opacity-60'>
+                                            <FiPlusCircle />
+                                        </button>
                                     </div>
 
                                     <TotalPriceAndNote
