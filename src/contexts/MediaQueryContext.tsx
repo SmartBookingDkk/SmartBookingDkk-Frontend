@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext } from 'react';
-import { useMediaQuery } from 'react-responsive';
+import { useMediaQuery } from '@mui/material';
 
 type ResponsiveContextType = {
     isMobile: boolean;
@@ -19,9 +19,9 @@ export const ResponsiveContext = createContext<ResponsiveContextType>(defaultRes
 
 
 export function ResponsiveProvider(props: any) {
-    const mobile = useMediaQuery({ query: '(max-width: 763px)' });
-    const tablet = useMediaQuery({ query: '(min-width: 764px) and (max-width: 1280px)' });
-    const desktop = useMediaQuery({ query: '(min-width: 1281px) and (max-width: 1920px)' });
+    const mobile = useMediaQuery('(max-width: 763px)');
+    const tablet = useMediaQuery('(min-width: 764px) and (max-width: 1280px)');
+    const desktop = useMediaQuery('(min-width: 1281px) and (max-width: 5000px)');
 
     const value = {
         isMobile: mobile,
