@@ -17,8 +17,7 @@ const InvoicePage = () => {
 
   return (
     <>
-    <CreateInvoiceButton />
-    
+      <CreateInvoiceButton />
       <div className='flex flex-col items-center'>
         <div>
           <Revenue />
