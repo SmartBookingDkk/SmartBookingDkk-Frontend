@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from 'react';
 import getISOWeek from 'date-fns/getISOWeek';
-import DayInMonth from './dayinmonth/DayInMonth';
+import DayInMonth from './DayInMonth';
 import startOfWeek from 'date-fns/startOfWeek';
 import endOfMonth from 'date-fns/endOfMonth';
 import startOfMonth from 'date-fns/startOfMonth';
 import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import { ResponsiveContext } from '@/contexts/MediaQueryContext';
-import CalendarDayView from '../daycalendar/CalendarDayView';
+import CalendarDayView from './CalendarDayView';
 import { set } from 'date-fns';
 
 const daysinWeek: string[] = ['Mandag', 'Tirdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
@@ -148,7 +148,7 @@ const CalendarMonthView = () => {
     const generateDatesOfMonth = (weekToMap: number, dateToMap: Date) => {
         const cells = [];
 
-        cells.push(<div key="weekNumber" className='font-bold text-center'>{weekToMapDecider(weekToMap, dateToMap)}</div>);
+        cells.push(<div key="weekNumber" className='font-bold text-center mt-2'>{weekToMapDecider(weekToMap, dateToMap)}</div>);
 
         for (let i = 0; i < 7; i++) {
 

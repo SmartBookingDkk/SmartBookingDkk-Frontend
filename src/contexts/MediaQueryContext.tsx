@@ -7,14 +7,14 @@ type ResponsiveContextType = {
     isMobile: boolean;
     isTablet: boolean;
     isDesktop: boolean;
-    isPortrait: boolean | null;
+    isPortrait: boolean;
     };
 
 const defaultResponsiveContext: ResponsiveContextType = {
     isMobile: false,
     isTablet: false,
     isDesktop: false,
-    isPortrait: null,
+    isPortrait: false,
 };
 
 export const ResponsiveContext = createContext<ResponsiveContextType>(defaultResponsiveContext);
