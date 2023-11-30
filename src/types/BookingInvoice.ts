@@ -8,7 +8,7 @@ export type BookingInvoice = {
     isVat: boolean;
     discount: number;
     isPaid: boolean;
-    bbooking: Booking;
+    booking: Booking | null;
     createdDate: Date;
     lastModifiedDate: Date;
     version: number;

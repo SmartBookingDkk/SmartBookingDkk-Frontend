@@ -1,19 +1,20 @@
-import {User} from './User';
-import {Business} from './Business';
-import {Customer} from './Customer';
-import {Booking} from './Booking';
+import { User } from './User';
+import { Business } from './Business';
+import { Customer } from './Customer';
+import { Booking } from './Booking';
+import { Address } from './Address';
 
 export type Employee = {
     id: number;
     firstName: string;
     lastName: string;
-    email: string;
-    phon: string;
+    phone: string;
     user: User;
-    business: Business;
-    customers: Customer[];
-    bookings: Booking[];
-     createdDate: Date;
+    business: Business | null;
+    customers: Customer[] | null;
+    address: Address;
+    bookings: Booking[] | null;
+    createdDate: Date;
     lastModifiedDate: Date;
     version: number;
 }
