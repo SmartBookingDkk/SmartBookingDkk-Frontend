@@ -36,12 +36,14 @@ const ProfileForm = ({ user, setUser }: ProfileFormProps) => {
 
     return (
         <form onSubmit={handleSubmit} className="m-4">
-            <PersonalInput user={user} setUser={setUser} />
+            
+                <PersonalInput user={user} setUser={setUser} />
 
-            <AddressInput user={user} setUser={setUser} />
-            <div className="flex justify-center m-8">
-                <button className="btn-primary capitalize mb-8" type="submit">gem mine ændringer</button>
-            </div>        
+                <AddressInput user={user} setUser={setUser} />
+                <div className="flex justify-center m-8">
+                    <button className="btn-primary capitalize mb-8" type="submit">gem mine ændringer</button>
+                </div>
+            
         </form>
     )
 }
