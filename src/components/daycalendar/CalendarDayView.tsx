@@ -18,82 +18,90 @@ const openHour: number = 10;
 const closingHour: number = 18;
 const timeSlotSize: number = 15;
 
-const CalendarDayView = () => {
-        
-        console.log("Current date:= ", currentDate)
-          
-      
-
-        const [dayInfo, setDayInfo] = useState({
-                monthsInYearIndex: currentDate.getMonth(),
-                currentDay: currentDate,
-                weekNumber: getISOWeek(currentDate),
-                dayNumberInWeek: getDay(currentDate)
-        });
+interface CalendarDayViewProps {
+  dateToMap: Date;
+}
 
 
-        /**
-         * Calculates timeslots for the day
-         */
-        const timeSlots: string[] = [];
-        for (let hour = openHour; hour <= closingHour; hour++) {
-            for (let minute = 0; minute < 60; minute += timeSlotSize) {
-                const timeSlot = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                timeSlots.push(timeSlot);
-            }
-        }
-        
-        
+  const CalendarDayView: React.FC<CalendarDayViewProps> = ({dateToMap}) => {
+  console.log("Current date:= ", currentDate)
+
+
+
+  const [dayInfo, setDayInfo] = useState({
+    monthsInYearIndex: currentDate.getMonth(),
+    currentDay: currentDate,
+    weekNumber: getISOWeek(currentDate),
+    dayNumberInWeek: getDay(currentDate)
+  });
+
+
+  /**
+   * Calculates timeslots for the day
+   */
+  const timeSlots: string[] = [];
+  for (let hour = openHour; hour <= closingHour; hour++) {
+    for (let minute = 0; minute < 60; minute += timeSlotSize) {
+      const timeSlot = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+      timeSlots.push(timeSlot);
+    }
+  }
+
+
   /** 
     * Function that handles the click on the arrows to change the month
     * @param monthSwapValue is the value that is added to the current month index, to swap the month
     */
-function handleChangeDayClick(daySwap: number) {
-  setDayInfo(prevDayInfo => {
-    const newDate = addDays(prevDayInfo.currentDay, daySwap);
+  function handleChangeDayClick(daySwap: number) {
+    setDayInfo(prevDayInfo => {
+      const newDate = addDays(prevDayInfo.currentDay, daySwap);
       return {
-          monthsInYearIndex: newDate.getMonth(),
-          currentDay: newDate,
-          weekNumber: getISOWeek(newDate),
-          dayNumberInWeek: getDay(newDate)
-          
+        monthsInYearIndex: newDate.getMonth(),
+        currentDay: newDate,
+        weekNumber: getISOWeek(newDate),
+        dayNumberInWeek: getDay(newDate)
+
       };
-  });
-}
+    });
+  }
 
+/* 
+<div className='flex flex-row justify-center gap-8'>
+        <div onClick={() => handleChangeDayClick(-1)}>{"<-"}  Forrige dag</div>
+        <div className=''>{'Uge ' + dayInfo.weekNumber + ' // ' + monthsInYear[dayInfo.monthsInYearIndex]
+          + '  ' + dayInfo.currentDay.getFullYear()}</div>
+        <div onClick={() => handleChangeDayClick(1)}>Næste dag {"->"}</div>
+      </div>
+*/
+  return (
+    <div>
+      
 
-return (
-  <div className='min-w-full'>
-    <div className='flex flex-row justify-center gap-8'>
-      <div onClick={() => handleChangeDayClick(-1)}>{"<-"}  Forrige dag</div>
-      <div className=''>{'Uge ' + dayInfo.weekNumber + ' // ' + monthsInYear[dayInfo.monthsInYearIndex]
-      + '  ' +dayInfo.currentDay.getFullYear()}</div>
-      <div onClick={() => handleChangeDayClick(1)}>Næste dag {"->"}</div>
-    </div>
+      <table className="min-w-full border-collapse border-gray-300 mb-5">
+        <thead className=''>
+          <tr>
+            <th className="w-6"></th>
 
-    <table className="min-w-full border border-collapse border-gray-300">
-      <thead className=''>
-        <tr>
-          <th className="p-2 border">Time</th>
-          
-          <th className="p-2 border">
-              {daysInWeek[dayInfo.dayNumberInWeek] + ' '+ dayInfo.currentDay.getDate() + '/' + (dayInfo.currentDay.getMonth()+1)}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {timeSlots.map(time => (
-          <tr key={time}>
-            <td className="border-collapse border-black h-6  text-right">{time.endsWith(':00') ? time : ''}</td>
-            <td className="border border-black h-6"></td>
+            <th className="p-2 min-w-full">
+              {daysInWeek[dateToMap.getDay()] + ' ' + dateToMap.getDate() + '/' + (dateToMap.getMonth() + 1)}
+            </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+      </table>
+      <table className='min-w-full'>
+        <tbody>
+          {timeSlots.map(time => (
+            <tr key={time}>
+              <td className="relative h-6 w-6 text-right -top-3 right-2">{time.endsWith(':00') ? time : ''}</td>
+              <td className="h-6 min-w-full border-b-2 border-t-2"></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
-  
-           
-    }
-            
+
+
+}
+
 export default CalendarDayView;

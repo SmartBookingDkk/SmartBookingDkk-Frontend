@@ -17,16 +17,16 @@ const openHour: number = 10;
 const closingHour: number = 18;
 const timeSlotSize: number = 15;
 
+
+
 const CalendarWeekView = () => {
         
-        console.log("Current date:= ", currentDate)
           
         function getWeekDays(startOfCurrentWeek:Date){
           const weekDays:Date[] = [];
           for (let i = 1; i <= 7; i++) {
             weekDays.push(addDays(startOfCurrentWeek, i));
           }
-          console.log(weekDays);
           return weekDays;
         }
 
@@ -60,12 +60,7 @@ const CalendarWeekView = () => {
 function handleChangeWeekClick(weekSwap: number) {
   setWeekInfo(prevWeekInfo => {
     const newDate = addWeeks(prevWeekInfo.firstDayOfWeek, weekSwap);
-      console.log("newDate before swap: ", newDate)
       newDate.setDate(newDate.getDate() + weekSwap)
-      console.log("newDate after swap: ", newDate)
-      console.log("before swap weekNumber=",prevWeekInfo.weekNumber)
-      console.log("after swap weekNumber=",getISOWeek(newDate))
-      console.log(getISOWeek(newDate));
       return {
           monthsInYearIndex: newDate.getMonth(),
           firstDayOfWeek: startOfWeek(newDate),
@@ -78,43 +73,54 @@ function handleChangeWeekClick(weekSwap: number) {
 }
 
 
-return (
-  <div className='min-w-full'>
-    <div className='flex flex-row justify-center gap-8'>
-      <div onClick={() => handleChangeWeekClick(-1)}>{"<-"}  Forrige uge</div>
-      <div className=''>{'Uge ' + weekInfo.weekNumber + ' // ' + monthsInYear[weekInfo.monthsInYearIndex]
-      + '  ' +weekInfo.firstDayOfWeek.getFullYear()}</div>
-      <div onClick={() => handleChangeWeekClick(1)}>Næste uge {"->"}</div>
-    </div>
 
-    <table className="min-w-full border border-collapse border-gray-300">
-      <thead className=''>
-        <tr>
-          <th className="p-2 border">Time</th>
-          {weekInfo.weekDays.map((day, index) => (
-            <th key={index} className="p-2 border">
-              {daysInWeek[index] + ' '+ day.getDate() + '/' + (day.getMonth()+1)}
-            </th>
+return (
+<div className='min-w-full'>
+  <div className='flex flex-row justify-center gap-12'>
+    <div onClick={() => handleChangeWeekClick(-1)}>{"<-"}  Forrige uge</div>
+    <div className=''>{'Uge ' + weekInfo.weekNumber + ' - ' + weekInfo.firstDayOfWeek.getFullYear()}</div>
+    <div onClick={() => handleChangeWeekClick(1)}>Næste uge {"->"}</div>
+  </div>
+
+  <table className="min-w-full border-collapse border-gray-300 mb-5">
+    <thead>
+      <tr>
+        <th className="w-14">Time</th>
+        {weekInfo.weekDays.map((day, index) => (
+          <th key={index} className="p-2 min-w-full border-l-2">
+            {daysInWeek[index] + ' '+ day.getDate() + '/' + (day.getMonth()+1)}
+          </th>
+        ))}
+      </tr>
+    </thead>
+  </table>
+
+  <table className="min-w-full">
+    <tbody>
+      {timeSlots.map(time => (
+        <tr key={time}>
+          <td className="relative h-6 w-14 text-right -top-3 right-2">
+            {time.endsWith(':00') ? time : ''}</td>
+          {weekInfo.weekDays.map(day => (
+            <td key={`${day}-${time}`} className="h-6 min-w-full border-b-2 border-t-2">
+              {}
+            </td>
           ))}
         </tr>
-      </thead>
-      <tbody>
-        {timeSlots.map(time => (
-          <tr key={time}>
-            <td className="border-collapse border-black h-6  text-right">{time.endsWith(':00') ? time : ''}</td>
-            {weekInfo.weekDays.map(day => (
-              <td key={`${day}-${time}`} className="border h-6">
-                {/* Booking stuff goez heere! */}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-    </div>
-  );
-  
-           
+      ))}
+    </tbody>
+  </table>
+</div>
+
+);
+
     }
-            
+
+
+
+
+
+
+
+
 export default CalendarWeekView;
