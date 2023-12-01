@@ -1,10 +1,13 @@
-import MyProfilePage from "@/templates/MyProfile/MyProfilePage"
+import MyProfilePageCustomer from "@/templates/MyProfile/MyProfilePageCustomer"
+import MyProfilePageEmployee from "@/templates/MyProfile/MyProfilePageEmployee";
 import { NextPage } from "next"
 
 
 const MyProfile: NextPage = () => {
-    
-    return <MyProfilePage />
+
+    //Verify if the client signed in is employee or customer - display either MyProfilePageEmployee or MyProfilePageCustomer
+
+    return <MyProfilePageEmployee />
 }
 
 export default MyProfile;

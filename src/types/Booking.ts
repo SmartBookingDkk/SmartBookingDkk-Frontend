@@ -8,10 +8,8 @@ export type Booking = {
     id: number;
     bookingStartTime: string;
     bookingEndTime: string;
-    bookingDate: Date;
+    bookingDate: number;
     location: string;
-    customer: Customer | null;
-    employee: Employee;
     category: Category;
     invoice: BookingInvoice;
     createdDate: Date;

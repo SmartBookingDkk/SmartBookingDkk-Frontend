@@ -12,10 +12,9 @@ export type Customer = {
     phone: string;
     user: User;
     address: Address;
-    business: Business;
+    business: Business[];
     employee: Employee;
     bookings: Booking[] | null;
-    notes: Note[] | null;
     signupRequestMessage: string;
     acceptedTimeStamp: Date;
     createdDate: Date;

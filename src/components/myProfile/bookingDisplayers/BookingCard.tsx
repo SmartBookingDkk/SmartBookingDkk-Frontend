@@ -1,11 +1,16 @@
 import { Booking } from "@/types/Booking";
+import { Business } from "@/types/Business";
+import { Customer } from "@/types/Customer";
+import { Employee } from "@/types/Employee";
 import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Image } from "@nextui-org/react";
 
 interface BookingCardProps {
     booking: Booking;
+    user: Employee | Customer;
 }
 
-const BookingCard = ({ booking }: BookingCardProps) => {
+const BookingCard = ({ booking, user }: BookingCardProps) => {
+
 
     return (
         <>
@@ -19,9 +24,13 @@ const BookingCard = ({ booking }: BookingCardProps) => {
                         width={40}
                     />
                     <div className="flex flex-col">
-                        <p className="text-md">{booking.employee.business?.name}</p>
-                        <p className="text-small text-default-500">Booket ved: {booking.employee.firstName + " " + booking.employee.lastName}</p>
-                        <p className="text-small text-default-500">{booking.bookingDate.toDateString()}</p>
+                        <p className="text-md">
+                            {('business' in user && Array.isArray(user.business))
+                                ? (user.business.find(business => business.id === booking.category.business.id)?.name ?? 'No Business Name')
+                                : ((user as Employee).business?.name ?? 'No Business Name')}
+                        </p>
+                        <p className="text-small text-default-500">Booket ved: {user.firstName + " " + user.lastName}</p>
+                        <p className="text-small text-default-500">{booking.bookingDate}</p>
                     </div>
                 </CardHeader>
                 <Divider />
@@ -30,7 +39,7 @@ const BookingCard = ({ booking }: BookingCardProps) => {
                     <p>{`Tidspunktet for din booking: ${booking.bookingStartTime} - ${booking.bookingEndTime}`}</p>
                     <p>{`Samlet pris: ${booking.invoice.price}.- DKK`}</p>
                 </CardBody>
-                <Divider />                
+                <Divider />
                 <CardFooter>
                     <Link
                         isExternal
