@@ -21,14 +21,20 @@ console.log("isPortrait: " + isPortrait);
 
 if (!isPortrait){
     console.log("Phone + Landscape");
-    return ( <CalendarWeekView />
+    return ( <CalendarWeekView isMobile={isMobile}
+      isTablet={isTablet}
+      isDesktop={isDesktop}
+      isPortrait={isPortrait}/>
   )
 }
 
 if (isPortrait){
     console.log("Phone + Portrait")
   return (
-    <CalendarMonthView />
+    <CalendarMonthView isMobile={isMobile}
+    isTablet={isTablet}
+    isDesktop={isDesktop}
+    isPortrait={isPortrait} />
   )
 }
 

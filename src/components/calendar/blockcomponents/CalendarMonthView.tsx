@@ -8,12 +8,23 @@ import startOfMonth from 'date-fns/startOfMonth';
 import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import { ResponsiveContext } from '@/contexts/MediaQueryContext';
 import CalendarDayView from './CalendarDayView';
-import { set } from 'date-fns';
+
 
 const daysinWeek: string[] = ['Mandag', 'Tirdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
 const monthsInYear: string[] = ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'];
 const currentDate = new Date();
-const CalendarMonthView = () => {
+
+
+interface CalendarMonthViewProps {
+    isMobile: boolean;
+    isTablet: boolean;
+    isDesktop: boolean;
+    isPortrait: boolean;
+}
+
+
+
+const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({ isMobile, isTablet, isDesktop, isPortrait }) => {
 
     // UseState for selected date
     const [selectedDate, setSelectedDate] = useState(currentDate);
@@ -21,7 +32,7 @@ const CalendarMonthView = () => {
 
 
     // Context used for media queries
-    const { isMobile, isTablet, isDesktop, isPortrait } = React.useContext(ResponsiveContext);
+    //const { isMobile, isTablet, isDesktop, isPortrait } = React.useContext(ResponsiveContext);
 
     // An object used to set certain values for calculating the calender grid. Updates when the month is changed and renders the page
     const [monthInfo, setMonthInfo] = useState({
@@ -35,11 +46,11 @@ const CalendarMonthView = () => {
      * Updates the DayCalender with with the pressed date.
      * @param clickedDate 
      */
-    const handleDateClick = (clickedDate:Date) => {
+    const handleDateClick = (clickedDate: Date) => {
         setShowDayView(true);
         setSelectedDate(clickedDate);
-        
-      };
+
+    };
 
     /** 
     * Function that handles the click on the arrows to change the month
@@ -68,7 +79,14 @@ const CalendarMonthView = () => {
                 [<div key="empty"></div>, ...daysinWeek.map((day, index) =>
                     <div key={index} className={`p-2 font-bold text-center`}>{day.substring(0, 1)}</div>)]
             )
-        } else
+        } else if (isTablet) {
+            return (
+                [<div key="empty"></div>, ...daysinWeek.map((day, index) =>
+                    <div key={index} className={`p-2 font-bold text-center`}>{day.substring(0, 1)}</div>)]
+            )
+        } 
+        
+        else
             return (
                 [<div key="empty"></div>, ...daysinWeek.map((day, index) =>
                     <div key={index} className={`p-2 font-bold text-center`}>{day}</div>)]
@@ -156,49 +174,70 @@ const CalendarMonthView = () => {
             cells.push(
                 <div key={i}>
                     <DayInMonth
-                    onClick={() => handleDateClick(nextDateToMap)}
-                    dateToMap={nextDateToMap}
-                    isDateInMonth={monthInfo.firstDayOfMonth.getMonth() == nextDateToMap.getMonth()} />
+                        onClick={() => handleDateClick(nextDateToMap)}
+                        dateToMap={nextDateToMap}
+                        isDateInMonth={monthInfo.firstDayOfMonth.getMonth() == nextDateToMap.getMonth()} />
                 </div>);
             dateToMap.setDate(dateToMap.getDate() + 1);
         }
         return cells;
     }
 
-    /**
-    * @returns Returns the whole calender grid, with date components inside
-    */
-    /*
-    <div className='flex flex-row justify-center gap-12'>
-        <div onClick={() => handleChangeWeekClick(-1)}>{"<-"}  Forrige uge</div>
-        <div className=''>{'Uge ' + weekInfo.weekNumber + ' - ' + weekInfo.firstDayOfWeek.getFullYear()}</div>
-        <div onClick={() => handleChangeWeekClick(1)}>Næste uge {"->"}</div>
-      </div>
-    */
+    if (isMobile) {
+        return (
+            <div>
+                <div className='min-w-full'>
+                    <div className='flex flex-row justify-center gap-12'>
+                        <div onClick={() => handleChangeMonthClick(-1)}
+                            className='p-2 '>{"<-"}</div>
+                        <div className='p-2 flex-item text-center font-bold'>{monthsInYear[monthInfo.monthsInYearIndex] + ' ' + monthInfo.firstDayOfMonth.getFullYear()}</div>
+                        <div onClick={() => handleChangeMonthClick(1)}
+                            className='p-2'>{"->"}</div>
 
 
-    return (
-        <div>
-        <div className='min-w-full'>
-            <div className='flex flex-row justify-center gap-12'>
-                <div onClick={() => handleChangeMonthClick(-1)}
-                    className='p-2 '>{"<-"}</div>
-                <div className='p-2 flex-item text-center font-bold'>{monthsInYear[monthInfo.monthsInYearIndex] + ' ' + monthInfo.firstDayOfMonth.getFullYear()}</div>
-                <div onClick={() => handleChangeMonthClick(1)}
-                    className='p-2'>{"->"}</div>
+                    </div>
+                    <div className={`grid grid-cols-8 `}>
+                        {generateCalenderGrid()}
+                    </div>
 
-
-            </div>
-            <div className={`grid grid-cols-8 `}>
-                {generateCalenderGrid()}
+                </div>
+                <div className={`mt-6`}>
+                    {showDayView && <CalendarDayView dateToMap={selectedDate} />}
+                </div>
             </div>
 
-        </div>
-        <div className={`mt-6`}>
-        {showDayView && <CalendarDayView dateToMap={selectedDate}/>}
-        </div>
-        </div>
-    )
+
+        )
+    }
+
+    if (!isMobile) {
+        return (
+            <div className='flex min-w-full min-h-full'>
+                <div className={`w-1/2 mr-10 justify-start`}>
+                    <div className='flex justify-center gap-12'>
+                        <div onClick={() => handleChangeMonthClick(-1)}
+                            className='p-2'>{"<-"}</div>
+                        <div className='p-2 flex-item text-center font-bold'>{monthsInYear[monthInfo.monthsInYearIndex] + ' ' + monthInfo.firstDayOfMonth.getFullYear()}</div>
+                        <div onClick={() => handleChangeMonthClick(1)}
+                            className='p-2'>{"->"}</div>
+
+                    </div>
+                    <div className={`grid grid-cols-8`}>
+                        {generateCalenderGrid()}
+                    </div>
+
+                </div>
+                <div className={`w-1/2 ml-10 p-2 justify-center min-h-full`}>
+                    <div className='}'>
+                    {showDayView && <CalendarDayView dateToMap={selectedDate} />}
+                    </div>
+                </div>
+            </div>
+
+
+        )
+    }
+
 }
 
 export default CalendarMonthView;

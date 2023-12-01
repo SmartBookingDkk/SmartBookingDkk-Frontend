@@ -73,34 +73,68 @@ interface CalendarDayViewProps {
         <div onClick={() => handleChangeDayClick(1)}>Næste dag {"->"}</div>
       </div>
 */
-  return (
-    <div>
-      
+return (
+  <div className='flex flex-col h-screen'>
+    
+    <div className=''>
+    <table className="min-w-full border-collapse border-gray-300 mb-5">
+      <thead className=''>
+        <tr>
+          <th className="w-6"></th>
 
-      <table className="min-w-full border-collapse border-gray-300 mb-5">
+          <th className="p-2 min-w-full">
+            {daysInWeek[dateToMap.getDay()] + ' ' + dateToMap.getDate() + '/' + (dateToMap.getMonth() + 1)}
+          </th>
+        </tr>
+      </thead>
+    </table>
+    </div>
+    <div className='overflow-y-auto p-2 flex-grow'>
+    <table className='min-w-full'>
+      <tbody>
+        {timeSlots.map(time => (
+          <tr key={time}>
+            <td className="relative h-6 w-6 text-right -top-3">{time.endsWith(':00') ? time : ''}</td>
+            <td className="h-6 min-w-full border-b-2 border-t-2"></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    </div>
+  </div>
+);
+
+
+/* <div className='min-w-full'>
+
+      <table className="w-full border-collapse border-gray-300 mb-5">
         <thead className=''>
           <tr>
             <th className="w-6"></th>
 
-            <th className="p-2 min-w-full">
+            <th className="p-2 ">
               {daysInWeek[dateToMap.getDay()] + ' ' + dateToMap.getDate() + '/' + (dateToMap.getMonth() + 1)}
             </th>
           </tr>
         </thead>
       </table>
-      <table className='min-w-full'>
-        <tbody>
+      <div className='p-2 '>
+        
+      <table className=''>
+        
+        <tbody className=''>
           {timeSlots.map(time => (
             <tr key={time}>
-              <td className="relative h-6 w-6 text-right -top-3 right-2">{time.endsWith(':00') ? time : ''}</td>
+              <td className="relative h-6 w-6 text-right -top-3 ">{time.endsWith(':00') ? time : ''}</td>
               <td className="h-6 min-w-full border-b-2 border-t-2"></td>
             </tr>
           ))}
         </tbody>
+        
       </table>
-    </div>
-  );
-
+      
+      </div>
+    </div>*/
 
 }
 
