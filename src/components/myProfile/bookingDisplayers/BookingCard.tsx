@@ -25,8 +25,11 @@ const BookingCard = ({ booking, user }: BookingCardProps) => {
                     />
                     <div className="flex flex-col">
                         <p className="text-md">
-                            {('business' in user && Array.isArray(user.business))
-                                ? (user.business.find(business => business.id === booking.category.business.id)?.name ?? 'No Business Name')
+                            {(user.business && Array.isArray(user.business))
+                                ? (user.business.find(business => {
+                                    console.log(business)
+                                    return business.id === booking.category.business.id
+                                })?.name ?? 'No Business Name')
                                 : ((user as Employee).business?.name ?? 'No Business Name')}
                         </p>
                         <p className="text-small text-default-500">Booket ved: {user.firstName + " " + user.lastName}</p>

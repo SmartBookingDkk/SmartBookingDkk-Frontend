@@ -13,8 +13,7 @@ export type Customer = {
     user: User;
     address: Address;
     business: Business[];
-    employee: Employee;
-    bookings: Booking[] | null;
+    employee: Employee;    
     signupRequestMessage: string;
     acceptedTimeStamp: Date;
     createdDate: Date;

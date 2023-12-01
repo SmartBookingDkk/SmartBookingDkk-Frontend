@@ -6,8 +6,9 @@ import { NextPage } from "next"
 const MyProfile: NextPage = () => {
 
     //Verify if the client signed in is employee or customer - display either MyProfilePageEmployee or MyProfilePageCustomer
+    const userIsCostumer = true;
 
-    return <MyProfilePageEmployee />
+    return userIsCostumer ? <MyProfilePageCustomer /> : <MyProfilePageEmployee />
 }
 
 export default MyProfile;

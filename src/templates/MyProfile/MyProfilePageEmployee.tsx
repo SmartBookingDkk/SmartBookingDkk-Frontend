@@ -39,7 +39,7 @@ const MyProfilePageEmployee = () => {
         return () => {
             ignore = true;
         }
-    }, [user])
+    }, [user?.id])
 
     return (
         <div>
