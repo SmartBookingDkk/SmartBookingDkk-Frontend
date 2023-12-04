@@ -36,7 +36,7 @@ const DashboardPanel = ({ children }: DashboardProps) => {
         <DashboardSidebar sidebarOpen={sidebarOpen} />
         <div
           className={`flex-grow p-4 transition-all duration-300 ease-in-out transform ${
-            sidebarOpen ? 'ml-[250px]' : 'ml-0'
+            sidebarOpen ? 'lg:ml-[220px] sm:ml-[180px]' : 'ml-0'
           }`}
         >
           {children}

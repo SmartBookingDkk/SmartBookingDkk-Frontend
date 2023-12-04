@@ -10,7 +10,7 @@ export type Booking = {
     bookingEndTime: string;
     bookingDate: Date;
     location: string;
-    customer: Customer;
+    customer: Customer | null;
     employee: Employee;
     category: Category;
     invoice: BookingInvoice;

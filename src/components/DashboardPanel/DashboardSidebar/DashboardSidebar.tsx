@@ -11,7 +11,7 @@ const DashboardSidebar = ({ sidebarOpen }: DashboardSidebarProps) => {
 
   return (
     <div
-      className={`fixed top-0 bottom-0 left-0 lg:w-[220px] sm:w-[150px] bg-white border-r-2 pt-12 
+      className={`fixed top-0 bottom-0 left-0 lg:w-[220px] sm:w-[180px] bg-white border-r-2 pt-12 
       transition-transform duration-300 ease-in-out transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       style={{ zIndex: 0 }}
