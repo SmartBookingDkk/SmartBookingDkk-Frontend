@@ -2,9 +2,8 @@
 export enum AuthProvider {
     LOCAL = 'LOCAL',
     GOOGLE = 'GOOGLE',
-    GITHUB = 'GITHUB',
-    FACEBOOK = 'FACEBOOK',
-  }
+    APPLE = "APPLE"
+}
   
   export enum Role {
     USER, EMPLOYEE, ADMIN
@@ -12,12 +11,12 @@ export enum AuthProvider {
 
 
 export type User = {
-    id: number;
+    id?: number;
     email: string;
-    password: string;
-    activationCode: string;
-    passwordResetCode: string;
+    password?: string;
+    activationCode?: string;
+    passwordResetCode?: string;
     active: boolean;
     provider: AuthProvider;
-    roles: Role[];
+    roles?: Role[];
 }
