@@ -174,6 +174,7 @@ const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({ isMobile, isTable
             cells.push(
                 <div key={i}>
                     <DayInMonth
+                        isDateSelected={selectedDate.getDate() == nextDateToMap.getDate() && selectedDate.getMonth() == nextDateToMap.getMonth() && selectedDate.getFullYear() == nextDateToMap.getFullYear()}
                         onClick={() => handleDateClick(nextDateToMap)}
                         dateToMap={nextDateToMap}
                         isDateInMonth={monthInfo.firstDayOfMonth.getMonth() == nextDateToMap.getMonth()} />
@@ -212,7 +213,7 @@ const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({ isMobile, isTable
 
     if (!isMobile) {
         return (
-            <div className='flex min-w-full min-h-full'>
+            <div className='flex min-w-full'>
                 <div className={`w-1/2 mr-10 justify-start`}>
                     <div className='flex justify-center gap-12'>
                         <div onClick={() => handleChangeMonthClick(-1)}
@@ -227,8 +228,8 @@ const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({ isMobile, isTable
                     </div>
 
                 </div>
-                <div className={`w-1/2 ml-10 p-2 justify-center min-h-full`}>
-                    <div className='}'>
+                <div className={`w-1/2 ml-10 p-2 justify-center`}>
+                    <div className=''>
                     {showDayView && <CalendarDayView dateToMap={selectedDate} />}
                     </div>
                 </div>

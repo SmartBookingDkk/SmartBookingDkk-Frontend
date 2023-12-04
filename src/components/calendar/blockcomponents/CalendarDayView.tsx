@@ -74,7 +74,7 @@ interface CalendarDayViewProps {
       </div>
 */
 return (
-  <div className='flex flex-col h-screen'>
+  <div className='relative'>
     
     <div className=''>
     <table className="min-w-full border-collapse border-gray-300 mb-5">
@@ -89,7 +89,7 @@ return (
       </thead>
     </table>
     </div>
-    <div className='overflow-y-auto p-2 flex-grow'>
+    <div className='overflow-y-auto max-h-[700px] p-2'>
     <table className='min-w-full'>
       <tbody>
         {timeSlots.map(time => (
