@@ -9,6 +9,8 @@ type TotalPriceAndNoteProps = {
 }
 
 const TotalPriceAndNote = ({invoicePrice, invoiceAmount, invoiceVAT, invoiceDiscount} : TotalPriceAndNoteProps) => {
+
+    let totalPrice = 0;
     return (
         
         <div className="flex justify-between items-center my-6" >
@@ -25,9 +27,9 @@ const TotalPriceAndNote = ({invoicePrice, invoiceAmount, invoiceVAT, invoiceDisc
                     <span>
                         {
                             invoiceVAT ?
-                                (((1.25 * Number(invoicePrice)) * Number(invoiceAmount)) - ((1.25 * Number(invoicePrice)) * Number(invoiceAmount) / 100 * Number(invoiceDiscount))).toFixed(2)
+                                ( totalPrice = ((1.25 * Number(invoicePrice)) * Number(invoiceAmount)) - ((1.25 * Number(invoicePrice)) * Number(invoiceAmount) / 100 * Number(invoiceDiscount))).toFixed(2)
                                 :
-                                ((Number(invoicePrice) * Number(invoiceAmount)) - (Number(invoicePrice) * Number(invoiceAmount) / 100 * Number(invoiceDiscount))).toFixed(2)
+                                ( totalPrice = (Number(invoicePrice) * Number(invoiceAmount)) - (Number(invoicePrice) * Number(invoiceAmount) / 100 * Number(invoiceDiscount))).toFixed(2)
                         }
                     </span>
                     ,-</p>

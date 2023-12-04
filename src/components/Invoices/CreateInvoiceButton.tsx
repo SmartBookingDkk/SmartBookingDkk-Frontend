@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@nextui-org/react";
+import React, { useState, useEffect } from 'react'
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@nextui-org/react";
 import { Select, SelectItem } from "@nextui-org/react";
 import { FaCheck } from "react-icons/fa";
 import { FiPlusCircle } from "react-icons/fi";
 import InvoiceInputFields from './InvoiceInputFields/InvoiceInputFields';
 import TotalPriceAndNote from './InvoiceInputFields/TotalPriceAndNote';
+import { Customer } from '@/types/Customer';
+import { Booking } from '@/types/Booking';
 
 
 
@@ -12,18 +14,58 @@ const CreateInvoiceButton = () => {
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    const bookings = ["Booking 23/11-2023", "Booking 23/12-2023"]
-    const [booking, setBooking] = React.useState("");
-
+    const [bookings, setBookings] = useState<Booking[] | null>([]);
+    const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+    const [invoiceNumber, setInvoiceNumber] = useState<number>(0);
     const [invoiceAmount, setInvoiceAmount] = useState<string>("");
     const [invoicePrice, setInvoicePrice] = useState<string>("");
     const [invoiceDiscount, setInvoiceDiscount] = useState<string>("");
     const [invoiceVAT, setInvoiceVAT] = useState<boolean>(false);
+    const [invoiceCreationDate, setInvoiceCreationDate] = useState<string>("");
+    const [invoiceDueDate, setInvoiceDueDate] = useState<string>("");
+
+    const [customers, setCustomers] = useState<Customer[] | null>([]);
+    const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+
+    const handleCustomerSelect = (customer: Customer) => {
+        setSelectedCustomer(customer)
+    }
+
+
+    const getCustomers = async () => {
+        const response = await fetch('http://localhost:8080/customer/customers/1', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        })
+        const data = await response.json()
+        setCustomers(data)
+    }
+
+    const getBooking = async () => {
+        const response = await fetch('http://localhost:8080/booking/customerId/1', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        })
+        const data = await response.json()
+        setBookings(data)
+    }
+
+    const handleBookingSelect = (booking: Booking) => {
+        setSelectedBooking(booking)
+    }
+
+    useEffect(() => {
+        getCustomers()
+    }, [])
+
+    useEffect(() => {
+        getBooking()
+    },[selectedCustomer]);
 
     return (
         <>
 
-            <div style={{ zIndex: 1 }} className='flex justify-end mx-8 sm:mt-2  my-4'>
+            <div className='flex justify-end mx-8 sm:mt-2 my-4'>
                 <button onClick={onOpen} className='btn-primary'>Opret Faktura +</button>
             </div>
 
@@ -31,62 +73,102 @@ const CreateInvoiceButton = () => {
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
                 placement="top-center"
-                size="2xl"
+                size="3xl"
+
             >
-                <ModalContent >
+
+                <ModalContent className='h-full overflow-y-scroll no-scrollbar'>
                     {(onClose) => (
                         <>
                             <ModalHeader className="flex flex-col gap-1">Opret Faktura</ModalHeader>
                             <ModalBody >
-                                <div className='flex justify-between items-center my-6'>
-                                    <Select
-                                        isRequired
-                                        label="Vælg Kunde"
-                                        placeholder="Vælg Kunde"
-                                        defaultSelectedKeys={["James Smith"]}
-                                        className="max-w-xs"
-                                    >
-                                        <SelectItem key={"James Smith"}>James Smith</SelectItem>
-                                    </Select>
-                                    <div className='flex flex-col w-1/2 justify-center ml-20'>
-                                        <p>John Smith</p>
-                                        <p>John.Smith@gmail.com</p>
-                                        <p>Sankt Kjelds Plads 4, 1 TH</p>
-                                        <p>2100 København Ø</p>
+
+                                <div className='flex w-full justify-center items-center'>
+
+                                    <div className='w-1/2 flex justify-center'>
+                                        {customers?.map((customer) => (
+                                            <Select
+                                                isRequired
+                                                label="Vælg Kunde"
+                                                placeholder="Vælg Kunde"
+                                                className="max-w-xs"
+                                                onChange={() => handleCustomerSelect(customer)}
+                                            >
+
+
+                                                <SelectItem key={customer.id} value={customer.id}>
+                                                    {customer.firstName + " " + customer.lastName}
+                                                </SelectItem>
+
+                                            </Select>
+                                        ))}
                                     </div>
+
+                                    <div className='flex w-1/2 justify-center'>
+
+
+                                        {selectedCustomer === null ? <p>Vælg Kunde</p> : (
+                                            <div className='flex flex-col'>
+                                                <p>{selectedCustomer?.firstName + " " + selectedCustomer?.lastName}</p>
+                                                <p>{selectedCustomer?.user.email}</p>
+                                                <p>{selectedCustomer?.address.streetName + " " + selectedCustomer?.address.number}</p>
+                                                <p>{selectedCustomer?.address.postalCode + " " + selectedCustomer?.address.city}</p>
+                                            </div>
+                                        )
+
+                                        }
+
+
+
+                                    </div>
+
                                 </div>
 
 
-                                <div className='flex justify-between items-center my-6'>
+                                <div className='flex w-full justify-center items-center my-6'>
 
-                                    <Select
-                                        label="Vælg Bookinger"
-                                        placeholder="Vælg Bookinger"
-                                        selectionMode="multiple"
-                                        className="max-w-xs"
-                                        onChange={(e) => setBooking(e.target.value)}
-                                    >
-                                        {bookings.map((booking) => (
-                                            <SelectItem key={booking}>{booking}</SelectItem>
-                                        ))}
-                                    </Select>
+                                    <div className='w-1/2 flex justify-center'>
+                                    {bookings?.map((booking) => (
+                                        <Select
+                                            label="Vælg Bookinger"
+                                            placeholder="Vælg Bookinger"
+                                            selectionMode="single"
+                                            className="max-w-xs"
+                                            onChange={() => handleBookingSelect(booking)}
+                                        >
+                                            
+                                                <SelectItem key={booking.id}>{booking.bookingStartTime}</SelectItem>
+                                          
+                                        </Select>
+                                          ))}
+                                    </div>
 
-                                    <div className='flex flex-col w-1/2 justify-center ml-20'>
-                                        <p>{booking}</p>
+                                    <div className='flex w-1/2 justify-center'>
+                                        {selectedBooking === null ? <p>Vælg Bookinger</p> : <div className='flex flex-col w-1/2 justify-center'>
+                                            <p>{selectedBooking.bookingStartTime}</p>
+                                        </div>}
+                                        
                                     </div>
 
                                 </div>
 
                                 <div className='flex flex-col'>
+
                                     <InvoiceInputFields
+                                        invoiceNumber={invoiceNumber}
                                         invoiceAmount={invoiceAmount}
                                         invoicePrice={invoicePrice}
                                         invoiceDiscount={invoiceDiscount}
                                         invoiceVAT={invoiceVAT}
+                                        invoiceCreationDate={invoiceCreationDate}
+                                        invoiceDueDate={invoiceDueDate}
+                                        setInvoiceNumber={setInvoiceNumber}
                                         setInvoiceAmount={setInvoiceAmount}
                                         setInvoicePrice={setInvoicePrice}
                                         setInvoiceDiscount={setInvoiceDiscount}
                                         setInvoiceVAT={setInvoiceVAT}
+                                        setInvoiceCreationDate={setInvoiceCreationDate}
+                                        setInvoiceDueDate={setInvoiceDueDate}
                                     />
                                     <div className='flex justify-center my-4'>
                                         <button className='transform ease-in-out duration-300 hover:scale-110 hover:opacity-100 text-[25px] opacity-60'>
