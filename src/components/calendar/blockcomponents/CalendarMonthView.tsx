@@ -183,7 +183,7 @@ const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({ isMobile, isTable
         }
         return cells;
     }
-
+/*
     if (isMobile) {
         return (
             <div>
@@ -203,7 +203,11 @@ const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({ isMobile, isTable
 
                 </div>
                 <div className={`mt-6`}>
-                    {showDayView && <CalendarDayView dateToMap={selectedDate} />}
+                    {showDayView && <CalendarDayView dateToMap={selectedDate}
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    isDesktop={isDesktop}
+                    isPortrait={isPortrait} />}
                 </div>
             </div>
 
@@ -230,7 +234,11 @@ const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({ isMobile, isTable
                 </div>
                 <div className={`w-1/2 ml-10 p-2 justify-center`}>
                     <div className=''>
-                    {showDayView && <CalendarDayView dateToMap={selectedDate} />}
+                    {showDayView && <CalendarDayView dateToMap={selectedDate}
+                    isMobile={isMobile}
+                    isTablet={isTablet}
+                    isDesktop={isDesktop}
+                    isPortrait={isPortrait} />}
                     </div>
                 </div>
             </div>
@@ -238,6 +246,56 @@ const CalendarMonthView: React.FC<CalendarMonthViewProps> = ({ isMobile, isTable
 
         )
     }
+*/
+
+return (
+    <div>
+      <div className={`min-w-full ${isMobile ? '' : 'flex'}`}>
+        <div className={isMobile ? '' : 'w-1/2 mr-10 justify-start'}>
+          <div className={`flex ${isMobile ? 'flex-row' : 'justify-center'} gap-12`}>
+            <div onClick={() => handleChangeMonthClick(-1)} className='p-2'>{"<-"}</div>
+            <div className='p-2 flex-item text-center font-bold'>
+              {monthsInYear[monthInfo.monthsInYearIndex] + ' ' + monthInfo.firstDayOfMonth.getFullYear()}
+            </div>
+            <div onClick={() => handleChangeMonthClick(1)} className='p-2'>{"->"}</div>
+          </div>
+          <div className={`grid grid-cols-8`}>
+            {generateCalenderGrid()}
+          </div>
+        </div>
+        {!isMobile && (
+          <div className={`w-1/2 ml-10 p-2 justify-center`}>
+            <div className=''>
+              {showDayView && (
+                <CalendarDayView
+                  dateToMap={selectedDate}
+                  isMobile={isMobile}
+                  isTablet={isTablet}
+                  isDesktop={isDesktop}
+                  isPortrait={isPortrait}
+                />
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+      {isMobile && (
+        <div className={`mt-6`}>
+          {showDayView && (
+            <CalendarDayView
+              dateToMap={selectedDate}
+              isMobile={isMobile}
+              isTablet={isTablet}
+              isDesktop={isDesktop}
+              isPortrait={isPortrait}
+            />
+          )}
+        </div>
+      )}
+    </div>
+  );
+  
+  
 
 }
 

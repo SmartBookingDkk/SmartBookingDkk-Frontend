@@ -16,7 +16,7 @@ const [isMonthView, setMonthView] = useState(true);
 
 return (
     
-    <div className='h-32'>
+    <div className=''>
     
         <div className='h-10 flex flex-row justify-center gap-12 mb-5 border-b-2 border-double border-black'>
     <div onClick={() =>setMonthView(true)} className={`p2 text-center ${isMonthView ? 'font-bold': ''}`}>Månedskalender</div>
