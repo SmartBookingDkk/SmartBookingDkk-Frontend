@@ -92,7 +92,7 @@ return (
           <th className="w-6"></th>
 
           <th className="p-2 min-w-full">
-            {daysInWeek[dateToMap.getDay()] + ' ' + dateToMap.getDate() + '/' + (dateToMap.getMonth() + 1)}
+            {daysInWeek[dateToMap.getDay()] + ' d. ' + dateToMap.getDate() + '/' + (dateToMap.getMonth() + 1)}
           </th>
         </tr>
       </thead>

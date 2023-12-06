@@ -16,7 +16,8 @@
     "next": "14.0.3",
     "react": "^18",
     "react-dom": "^18",
-    "react-hook-screen-orientation": "^1.0.4"
+    "react-hook-screen-orientation": "^1.0.4",
+    "sweetalert2": "^11.10.1"
   },
   "devDependencies": {
     "@types/cookie": "^0.5.4",

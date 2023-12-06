@@ -6,6 +6,7 @@ import { ResponsiveContext } from '@/contexts/MediaQueryContext'
 import { NextPage } from 'next';
 import PhoneCalendar from '@/components/calendar/PhoneCalendar'
 import DesktopCalendar from '@/components/calendar/DesktopCalendar'
+import {Spinner} from "@nextui-org/react";
 
 
 const CalendarPage: NextPage = () => {
@@ -21,7 +22,7 @@ const CalendarPage: NextPage = () => {
 
 
   if(loading){
-    return <div>Loading...</div>
+    return <Spinner />
   }
 
   if (isMobile){
