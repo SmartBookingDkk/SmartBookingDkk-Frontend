@@ -110,7 +110,7 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
       return {
         monthsInYearIndex: newDate.getMonth(),
         firstDayOfWeek: startOfWeek(newDate, { weekStartsOn: 1 }),
-        lastDayOfWeek: endOfWeek(newDate, {weekStartsOn: 1}),
+        lastDayOfWeek: endOfWeek(newDate, { weekStartsOn: 1 }),
         weekNumber: getISOWeek(newDate),
         weekDays: getWeekDays(startOfWeek(newDate))
       };
@@ -178,21 +178,21 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
-  
+
     return `${year}-${month}-${day}`;
   }
 
 
-  function isBookingStartingNow(booking:Booking, day:Date, timeslot:string) {
+  function isBookingStartingNow(booking: Booking, day: Date, timeslot: string) {
     if (booking.bookingDate.toString() == formatDateToYYYYMMDD(day)) {
-      if (booking.bookingStartTime.substring(0,4) == timeslot.substring(0,4)) {
+      if (booking.bookingStartTime.substring(0, 4) == timeslot.substring(0, 4)) {
         return true;
       }
     }
     return false;
   }
 
-  function calculateRowSpan(bookingExistOnDateAndTimeslot:Booking) {
+  function calculateRowSpan(bookingExistOnDateAndTimeslot: Booking) {
     const startTime = bookingExistOnDateAndTimeslot.bookingStartTime;
   }
 
@@ -227,28 +227,29 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
                 {weekInfo.weekDays.map((day, index) => {
 
                   const bookingExistOnDateAndTimeslot = bookings?.find(booking =>
-                  isBookingStartingNow(booking, day, time));
-                  
-                  
+                    isBookingStartingNow(booking, day, time));
 
-                  if (bookingExistOnDateAndTimeslot){
+
+
+                  if (bookingExistOnDateAndTimeslot) {
                     return (
                       <td key={`${day}-${time}`}
                         className={`h-6 w-20 border-b-2 border-t-2 ${index == 0 ? '' : 'border-l-2'} bg-green-500`}
                         onClick={() => handleCellClick(time, day)}
-                        >
+                        rowSpan={4}
+                      >Starts:{bookingExistOnDateAndTimeslot.bookingStartTime } <br></br>
+                      Ends: {bookingExistOnDateAndTimeslot.bookingEndTime}
                       </td>
                     )
                   }
                   else
-                  
-                return (
-                <td key={`${day}-${time}`}
-                  className={`h-6 w-20 border-b-2 border-t-2 ${index == 0 ? '' : 'border-l-2'}`}
-                  onClick={() => handleCellClick(time, day)}>
-                </td>)
-                
-  })}
+                    return (
+                      <td key={`${day}-${time}`}
+                        className={`h-6 w-20 border-b-2 border-t-2 ${index == 0 ? '' : 'border-l-2'}`}
+                        onClick={() => handleCellClick(time, day)}>
+                      </td>)
+
+                })}
               </tr>
             ))}
           </tbody>
