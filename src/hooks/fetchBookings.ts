@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Booking } from '@/types/Booking'
 
 function useFetchBookings(employeeId: number, startDate: Date, endDate: Date) {
-  const [data, setData] = useState<Booking[] | null>(null);
+  const [bookings, setData] = useState<Booking[] | null>(null);
   const [isLoading, setLoading] = useState(true)
 
   const startDateString = startDate.getFullYear().toString() +
@@ -23,13 +23,13 @@ function useFetchBookings(employeeId: number, startDate: Date, endDate: Date) {
   useEffect(() => {
     fetch(`http://localhost:8080/booking/${employeeId}?startDate=${startDateString}&endDate=${endDateString}`)
       .then((res) => res.json())
-      .then((data) => {
-        setData(data)
+      .then((bookings) => {
+        setData(bookings)
         setLoading(false)
       })
   }, [])
 
-  return { data, isLoading }
+  return { bookings, isLoading }
 }
 
 export default useFetchBookings;

@@ -9,6 +9,7 @@ import { endOfWeek } from 'date-fns';
 import { addWeeks } from 'date-fns';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Checkbox, Link, Input } from "@nextui-org/react"
 import useFetchBookings from '@/hooks/fetchBookings';
+import { Booking } from '@/types/Booking';
 
 
 
@@ -36,8 +37,8 @@ interface CalendarWeekViewProps {
 const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet, isDesktop, isPortrait }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedCell, setSelectedCell] = useState<{ time: string; day: Date } | null>(null);
-  
-  
+
+
 
   const [weekInfo, setWeekInfo] = useState({
     monthsInYearIndex: currentDate.getMonth(),
@@ -48,14 +49,15 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
     weekDays: getWeekDays(startOfWeek(currentDate))
   });
 
-  const { data, isLoading } = useFetchBookings(employeeId, weekInfo.firstDayOfWeek, weekInfo.lastDayOfWeek);
-  console.log(data)
+  const { bookings, isLoading } = useFetchBookings(employeeId, weekInfo.firstDayOfWeek, weekInfo.lastDayOfWeek);
+  console.log("Hello");
+  console.log(bookings)
 
-/**
- * Maps the days (name) of the week
- * @param startOfCurrentWeek 
- * @returns 
- */
+  /**
+   * Maps the days (name) of the week
+   * @param startOfCurrentWeek 
+   * @returns 
+   */
   function getWeekDays(startOfCurrentWeek: Date) {
     const weekDays: Date[] = [];
     for (let i = 1; i <= 7; i++) {
@@ -85,10 +87,24 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
     * Function that handles the click on the arrows to change the month
     * @param monthSwapValue is the value that is added to the current month index, to swap the month
     */
-  function handleChangeWeekClick(weekSwap: number) {
+  /*function handleChangeWeekClick(weekSwap: number) {
     setWeekInfo(prevWeekInfo => {
       const newDate = addWeeks(prevWeekInfo.firstDayOfWeek, weekSwap);
-      newDate.setDate(newDate.getDate() + weekSwap)
+      //newDate.setDate(newDate.getDate() + weekSwap)
+      return {
+        monthsInYearIndex: newDate.getMonth(),
+        firstDayOfWeek: startOfWeek(newDate),
+        lastDayOfWeek: endOfWeek(newDate),
+        weekNumber: getISOWeek(newDate),
+        lastWeekOfMonth: getISOWeek(endOfMonth(startOfMonth(newDate))),
+        weekDays: getWeekDays(startOfWeek(newDate))
+      };
+    });
+  }*/
+
+  function handleChangeWeekClick(weekSwap: number) {
+    setWeekInfo(prevWeekInfo => {
+      const newDate = addWeeks(new Date(prevWeekInfo.firstDayOfWeek), weekSwap);
       return {
         monthsInYearIndex: newDate.getMonth(),
         firstDayOfWeek: startOfWeek(newDate),
@@ -139,6 +155,8 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
                 <td className="relative h-6 w-14 text-right -top-3 right-2">
                   {time.endsWith(':00') ? time : ''}</td>
                 {weekInfo.weekDays.map((day, index) => (
+
+
                   <td key={`${day}-${time}`}
                     className={`h-6 min-w-full border-b-2 border-t-2`}
                     onClick={() => handleCellClick(time, day)}>
@@ -153,11 +171,31 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
     );
   }
 
-  
+
 
   if (isLoading) return (<p>Loading...</p>)
+
+  function formatDateToYYYYMMDD(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
   
-  
+    return `${year}-${month}-${day}`;
+  }
+
+
+  function isBookingStartingNow(booking:Booking, day:Date, timeslot:string) {
+    if (booking.bookingDate.toString() == formatDateToYYYYMMDD(day)) {
+      if (booking.bookingStartTime.substring(0,4) == timeslot.substring(0,4)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function calculateRowSpan(bookingExistOnDateAndTimeslot:Booking) {
+    const startTime = bookingExistOnDateAndTimeslot.bookingStartTime;
+  }
 
   if (!isMobile) {
     console.log("isMobile: ", isMobile)
@@ -189,14 +227,31 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
               <tr key={time}>
                 <td className="relative h-6 w-14 text-right -top-3 right-2">
                   {time.endsWith(':00') ? time : ''}</td>
-                {weekInfo.weekDays.map((day, index) => (
-                  <td key={`${day}-${time}`}
-                    className={`h-6 w-20 border-b-2 border-t-2 ${index == 0 ? '' : 'border-l-2'}`}
-                    onClick={() => handleCellClick(time, day)}>
+                {weekInfo.weekDays.map((day, index) => {
 
+                  const bookingExistOnDateAndTimeslot = bookings?.find(booking =>
+                  isBookingStartingNow(booking, day, time));
+                  
+                  
 
-                  </td>
-                ))}
+                  if (bookingExistOnDateAndTimeslot){
+                    return (
+                      <td key={`${day}-${time}`}
+                        className={`h-6 w-20 border-b-2 border-t-2 ${index == 0 ? '' : 'border-l-2'} bg-green-500`}
+                        onClick={() => handleCellClick(time, day)}
+                        >
+                      </td>
+                    )
+                  }
+                  else
+                  
+                return (
+                <td key={`${day}-${time}`}
+                  className={`h-6 w-20 border-b-2 border-t-2 ${index == 0 ? '' : 'border-l-2'}`}
+                  onClick={() => handleCellClick(time, day)}>
+                </td>)
+                
+  })}
               </tr>
             ))}
           </tbody>
@@ -204,56 +259,56 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
         <div className='right-0'>
           {/* Render the modal outside the loop */}
           {isOpen && selectedCell && (
-            <Modal 
-            isOpen={isOpen} 
-            onOpenChange={onOpenChange}
-            placement="top-center"
-            className='right-0'
-          >
-            <ModalContent className='right-0'>
-              {(onClose) => (
-                <>
-                  <ModalHeader className="flex flex-col gap-1">Log in</ModalHeader>
-                  <ModalBody>
-                    <Input
-                      autoFocus
-                      
-                      label="Email"
-                      placeholder="Enter your email"
-                      variant="bordered"
-                    />
-                    <Input
-                      
-                      label="Password"
-                      placeholder="Enter your password"
-                      type="password"
-                      variant="bordered"
-                    />
-                    <div className="flex py-2 px-1 justify-between">
-                      <Checkbox
-                        classNames={{
-                          label: "text-small",
-                        }}
-                      >
-                        Remember me
-                      </Checkbox>
-                      <Link color="primary" href="#" size="sm">
-                        Forgot password?
-                      </Link>
-                    </div>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button color="danger" variant="flat" onPress={onClose}>
-                      Close
-                    </Button>
-                    <Button color="primary" onPress={onClose}>
-                      Sign in
-                    </Button>
-                  </ModalFooter>
-                </>
-              )}
-            </ModalContent>
-          </Modal>
+            <Modal
+              isOpen={isOpen}
+              onOpenChange={onOpenChange}
+              placement="top-center"
+              className='right-0'
+            >
+              <ModalContent className='right-0'>
+                {(onClose) => (
+                  <>
+                    <ModalHeader className="flex flex-col gap-1">Log in</ModalHeader>
+                    <ModalBody>
+                      <Input
+                        autoFocus
+
+                        label="Email"
+                        placeholder="Enter your email"
+                        variant="bordered"
+                      />
+                      <Input
+
+                        label="Password"
+                        placeholder="Enter your password"
+                        type="password"
+                        variant="bordered"
+                      />
+                      <div className="flex py-2 px-1 justify-between">
+                        <Checkbox
+                          classNames={{
+                            label: "text-small",
+                          }}
+                        >
+                          Remember me
+                        </Checkbox>
+                        <Link color="primary" href="#" size="sm">
+                          Forgot password?
+                        </Link>
+                      </div>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button color="danger" variant="flat" onPress={onClose}>
+                        Close
+                      </Button>
+                      <Button color="primary" onPress={onClose}>
+                        Sign in
+                      </Button>
+                    </ModalFooter>
+                  </>
+                )}
+              </ModalContent>
+            </Modal>
           )}
         </div>
       </div>
@@ -264,7 +319,7 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
 
 
 
-  
+
 }
 
 
