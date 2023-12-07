@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react'
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue } from "@nextui-org/react";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue, Button } from "@nextui-org/react";
 import { BookingInvoice } from '@/types/BookingInvoice';
+import { BsThreeDots } from "react-icons/bs";
+import { FaRegTrashCan, FaRegFilePdf } from "react-icons/fa6";
+import { MdOutlinePaid } from "react-icons/md";
 
-const OutstandingInvoices = () => {
+import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/react";
 
-    const [unPaidInvoices, setUnPaidInvoices] = useState<BookingInvoice[] | []>([])
+type OutstandingInvoicesProps = {
+    unPaidInvoices: BookingInvoice[] | [];
+    onMarkAsPaid: (id: number) => void;
+}
 
-    const getInvoices = async () => {
-        const response = await fetch('http://localhost:8080/api/v1/invoice/unpaidInvoices/1', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        })
-        const data = await response.json()
-        setUnPaidInvoices(data)
-    }
+const OutstandingInvoices = ({unPaidInvoices, onMarkAsPaid}: OutstandingInvoicesProps) => {
 
-
-    useEffect(() => {
-        getInvoices()
-    }, [])
+    
+    const handleMarkAsPaid = async (id: number) => {
+        onMarkAsPaid(id);
+      };
+   
 
 
     return (
@@ -32,21 +32,82 @@ const OutstandingInvoices = () => {
                     <TableColumn>Status</TableColumn>
                     <TableColumn>Note</TableColumn>
                     <TableColumn>Beløb</TableColumn>
+                    <TableColumn className='flex justify-center items-center'>Actions</TableColumn>
 
                 </TableHeader>
                 <TableBody>
-                    {unPaidInvoices.map((invoice: BookingInvoice) => (
-                        <TableRow key={invoice.id}>
+                    {unPaidInvoices.length > 0 ? (
+                        unPaidInvoices.map((invoice: BookingInvoice) => (
+                            <TableRow key={invoice.id}>
+                                <TableCell>{invoice.id}</TableCell>
+                                <TableCell>{invoice.createdDate.toString()}</TableCell>
+                                <TableCell>{invoice.dueDate.toString()}</TableCell>
+                                <TableCell>{invoice.discount}</TableCell>
+                                <TableCell>{invoice.isPaid ? "Betalt" : "Ikke Betalt"}</TableCell>
+                                <TableCell>{invoice.note}</TableCell>
+                                <TableCell>{invoice.price}</TableCell>
+                                <TableCell className='flex justify-center'>
 
-                            <TableCell>{invoice.id}</TableCell>
-                            <TableCell>{invoice.createdDate}</TableCell>
-                            <TableCell>{invoice.dueDate}</TableCell>
-                            <TableCell>{invoice.discount}</TableCell>
-                            <TableCell>{invoice.isPaid}</TableCell>
-                            <TableCell>{invoice.note}</TableCell>
-                            <TableCell>{invoice.price}</TableCell>
+                                    <Popover placement="right">
+
+                                        <PopoverTrigger>
+                                            <Button className=' w-3 h-5 bg-white hover:scale-110'><BsThreeDots /></Button>
+                                        </PopoverTrigger>
+
+                                        <PopoverContent>
+
+                                            <div className="flex flex-col w-[180px] px-1 py-2">
+
+                                                <button
+                                                    onClick={() => handleMarkAsPaid(invoice.id)}
+                                                    className='flex items-center text-[14px] py-2 hover:bg-[#f0f0f0] hover:scale-110 px-2 rounded-lg'>
+                                                    <MdOutlinePaid className="mr-4" />Marker som betalt
+                                                </button>
+
+                                                <button className='flex items-center text-[14px] py-2 hover:bg-[#f0f0f0] hover:scale-110 px-2 rounded-lg'>
+                                                    <FaRegTrashCan className="mr-4" style={{ color: 'red' }} />Slet Faktura
+                                                </button>
+
+                                                <button className='flex items-center text-[14px] py-2 hover:bg-[#f0f0f0] hover:scale-110 px-2 rounded-lg'>
+                                                    <FaRegFilePdf className="mr-4" />Eksporter PDF
+                                                </button>
+
+                                            </div>
+
+                                        </PopoverContent>
+                                    </Popover>
+
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell>
+                                Der er ingen fakturaer
+                            </TableCell>
+                            <TableCell>
+                                Der er ingen fakturaer
+                            </TableCell>
+                            <TableCell>
+                                Der er ingen fakturaer
+                            </TableCell>
+                            <TableCell>
+                                Der er ingen fakturaer
+                            </TableCell>
+                            <TableCell>
+                                Der er ingen fakturaer
+                            </TableCell>
+                            <TableCell>
+                                Der er ingen fakturaer
+                            </TableCell>
+                            <TableCell>
+                                Der er ingen fakturaer
+                            </TableCell>
+                            <TableCell>
+                                Der er ingen fakturaer
+                            </TableCell>
                         </TableRow>
-                    ))}
+                    )}
                 </TableBody>
             </Table>
         </div>

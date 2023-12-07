@@ -6,11 +6,21 @@ type TotalPriceAndNoteProps = {
     invoiceAmount: string;
     invoiceVAT: boolean;
     invoiceDiscount: string;
+    invoiceNote: string;
+    setInvoiceNote: (value: string) => void;
+    setTotalPrice: (value: number) => void;
+    totalPrice: number;
 }
 
-const TotalPriceAndNote = ({invoicePrice, invoiceAmount, invoiceVAT, invoiceDiscount} : TotalPriceAndNoteProps) => {
+const TotalPriceAndNote = ({invoicePrice, invoiceAmount, invoiceVAT, invoiceDiscount, invoiceNote, setInvoiceNote, totalPrice, setTotalPrice} : TotalPriceAndNoteProps) => {
 
-    let totalPrice = 0;
+
+    const calculatedPrice = invoiceVAT ?
+        ((1.25 * Number(invoicePrice)) * Number(invoiceAmount)) - ((1.25 * Number(invoicePrice)) * Number(invoiceAmount) / 100 * Number(invoiceDiscount))
+        :
+        (Number(invoicePrice) * Number(invoiceAmount)) - (Number(invoicePrice) * Number(invoiceAmount) / 100 * Number(invoiceDiscount));
+
+    setTotalPrice(calculatedPrice);
     return (
         
         <div className="flex justify-between items-center my-6" >
@@ -18,6 +28,8 @@ const TotalPriceAndNote = ({invoicePrice, invoiceAmount, invoiceVAT, invoiceDisc
                 label="Note"
                 placeholder="Skriv en note til fakturaen"
                 className="max-w-xs"
+                value={invoiceNote}
+                onChange={(e) => setInvoiceNote(e.target.value)}
             />
 
             <div className='mr-10'>
@@ -25,12 +37,7 @@ const TotalPriceAndNote = ({invoicePrice, invoiceAmount, invoiceVAT, invoiceDisc
                 <p className='text-right'>Moms udgør: <span>{invoiceVAT ? (1.25 * Number(invoicePrice) * Number(invoiceAmount) - Number(invoicePrice) * Number(invoiceAmount)) : "0"}</span>,-</p>
                 <p className='text-right underline underline-offset-4'>Total Pris:<span> </span>
                     <span>
-                        {
-                            invoiceVAT ?
-                                ( totalPrice = ((1.25 * Number(invoicePrice)) * Number(invoiceAmount)) - ((1.25 * Number(invoicePrice)) * Number(invoiceAmount) / 100 * Number(invoiceDiscount))).toFixed(2)
-                                :
-                                ( totalPrice = (Number(invoicePrice) * Number(invoiceAmount)) - (Number(invoicePrice) * Number(invoiceAmount) / 100 * Number(invoiceDiscount))).toFixed(2)
-                        }
+                       {calculatedPrice.toFixed(2)}
                     </span>
                     ,-</p>
             </div>
