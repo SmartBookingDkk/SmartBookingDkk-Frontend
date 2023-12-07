@@ -17,7 +17,7 @@ import { Booking } from '@/types/Booking';
 const daysInWeek: string[] = ['Mandag', 'Tirdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
 const monthsInYear: string[] = ['Januar', 'Februar', 'Marts', 'April', 'Maj', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'December'];
 const currentDate = new Date();
-currentDate.setHours(1, 0, 0, 0);
+//currentDate.setHours(1, 0, 0, 0);
 
 const openHour: number = 10;
 const closingHour: number = 18;
@@ -42,16 +42,15 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
 
   const [weekInfo, setWeekInfo] = useState({
     monthsInYearIndex: currentDate.getMonth(),
-    firstDayOfWeek: startOfWeek(currentDate),
-    lastDayOfWeek: endOfWeek(currentDate),
+    firstDayOfWeek: startOfWeek(currentDate, { weekStartsOn: 1 }),
+    lastDayOfWeek: endOfWeek(currentDate, { weekStartsOn: 1 }),
     weekNumber: getISOWeek(currentDate),
-    lastWeekOfMonth: getISOWeek(endOfMonth(startOfMonth(currentDate))),
     weekDays: getWeekDays(startOfWeek(currentDate))
   });
 
+  console.log(weekInfo)
+
   const { bookings, isLoading } = useFetchBookings(employeeId, weekInfo.firstDayOfWeek, weekInfo.lastDayOfWeek);
-  console.log("Hello");
-  console.log(bookings)
 
   /**
    * Maps the days (name) of the week
@@ -105,20 +104,20 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
   function handleChangeWeekClick(weekSwap: number) {
     setWeekInfo(prevWeekInfo => {
       const newDate = addWeeks(new Date(prevWeekInfo.firstDayOfWeek), weekSwap);
+      console.log(newDate)
+      newDate.setHours(newDate.getHours() + 1);
+      console.log(newDate)
       return {
         monthsInYearIndex: newDate.getMonth(),
-        firstDayOfWeek: startOfWeek(newDate),
-        lastDayOfWeek: endOfWeek(newDate),
+        firstDayOfWeek: startOfWeek(newDate, { weekStartsOn: 1 }),
+        lastDayOfWeek: endOfWeek(newDate, {weekStartsOn: 1}),
         weekNumber: getISOWeek(newDate),
-        lastWeekOfMonth: getISOWeek(endOfMonth(startOfMonth(newDate))),
         weekDays: getWeekDays(startOfWeek(newDate))
       };
     });
   }
 
   const handleCellClick = (timeSlot: string, day: Date) => {
-    console.log("day: ", day);
-    console.log("timeSlot: ", timeSlot);
     setSelectedCell({ time: timeSlot, day });
     onOpen();
   };
@@ -198,8 +197,6 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
   }
 
   if (!isMobile) {
-    console.log("isMobile: ", isMobile)
-    console.log("isPortrait: ", isPortrait)
     return (
       <div className='min-w-full'>
         <div className='flex flex-row justify-center gap-12'>

@@ -12,7 +12,7 @@ interface DesktopCalendarProps {
 }
 
 const DesktopCalendar: React.FC<DesktopCalendarProps> = ({isMobile, isTablet, isDesktop, isPortrait}) => {
-const [isMonthView, setMonthView] = useState(true);
+const [isMonthView, setMonthView] = useState(false);
 
 return (
     
