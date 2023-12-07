@@ -36,9 +36,7 @@ interface CalendarWeekViewProps {
 const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet, isDesktop, isPortrait }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedCell, setSelectedCell] = useState<{ time: string; day: Date } | null>(null);
-  const { data, isLoading } = useFetchBookings(employeeId)
-
-  console.log(data)
+  
   
 
   const [weekInfo, setWeekInfo] = useState({
@@ -49,6 +47,9 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
     lastWeekOfMonth: getISOWeek(endOfMonth(startOfMonth(currentDate))),
     weekDays: getWeekDays(startOfWeek(currentDate))
   });
+
+  const { data, isLoading } = useFetchBookings(employeeId, weekInfo.firstDayOfWeek, weekInfo.lastDayOfWeek);
+  console.log(data)
 
 /**
  * Maps the days (name) of the week
