@@ -14,8 +14,8 @@ export type Customer = {
     address: Address;
     business: Business;
     employee: Employee;
-    bookings: Booking[];
-    notes: Note[];
+    bookings: Booking[] | null;
+    notes: Note[] | null;
     signupRequestMessage: string;
     acceptedTimeStamp: Date;
     createdDate: Date;

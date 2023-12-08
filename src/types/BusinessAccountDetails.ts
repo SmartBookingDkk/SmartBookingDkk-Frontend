@@ -5,5 +5,5 @@ export type BusinessAccountDetails = {
     bankName: string;
     regNo: string;
     accountNo: string;
-    business: Business;
+    business: Business | null;
 }

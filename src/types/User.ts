@@ -14,10 +14,10 @@ export enum AuthProvider {
 export type User = {
     id: number;
     email: string;
-    password: string;
-    activationCode: string;
-    passwordResetCode: string;
+    password: string | null;
+    activationCode: string | null;
+    passwordResetCode: string | null;
     active: boolean;
-    provider: AuthProvider;
-    roles: Role[];
+    provider: AuthProvider | null;
+    roles: Role[] | null;
 }
