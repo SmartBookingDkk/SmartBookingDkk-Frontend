@@ -10,6 +10,7 @@ import { addWeeks } from 'date-fns';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Checkbox, Link, Input } from "@nextui-org/react"
 import useFetchBookings from '@/hooks/fetchBookings';
 import { Booking } from '@/types/Booking';
+import { is } from 'date-fns/locale';
 
 
 
@@ -186,14 +187,28 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
   function isBookingStartingNow(booking: Booking, day: Date, timeslot: string) {
     if (booking.bookingDate.toString() == formatDateToYYYYMMDD(day)) {
       if (booking.bookingStartTime.substring(0, 4) == timeslot.substring(0, 4)) {
+        
         return true;
       }
     }
     return false;
   }
 
-  function calculateRowSpan(bookingExistOnDateAndTimeslot: Booking) {
-    const startTime = bookingExistOnDateAndTimeslot.bookingStartTime;
+  function isBookingOngoing(booking: Booking, day: Date, timeslot: string) {
+    if (booking.bookingDate.toString() == formatDateToYYYYMMDD(day)) {
+      if (booking.bookingStartTime.substring(0, 4) < timeslot.substring(0, 4) && booking.bookingEndTime.substring(0, 4) > timeslot.substring(0, 4)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+  function calculateRowSpan(bookingStarts: Booking) {
+    const startTime = new Date(`December 08, 2023 ${bookingStarts.bookingStartTime}`);
+    const endTime = new Date(`December 08, 2023 ${bookingStarts.bookingEndTime}`);
+    const spanDuration = ((endTime.getTime() - startTime.getTime())/1000/60)/timeSlotSize;    
+    return spanDuration;
   }
 
   if (!isMobile) {
@@ -204,9 +219,10 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
           <div className=''>{'Uge ' + weekInfo.weekNumber + ' - ' + weekInfo.firstDayOfWeek.getFullYear()}</div>
           <div onClick={() => handleChangeWeekClick(1)}>Næste uge {"->"}</div>
         </div>
-        <div className='w-2/3'>
-          <table className="min-w-full border-collapse border-gray-300 mb-5 mt-5">
-            <thead>
+        <div className=''>
+         
+          <table className="min-w-full">
+          <thead>
               <tr>
                 <th className="w-14"></th>
                 {weekInfo.weekDays.map((day, index) => (
@@ -216,9 +232,6 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
                 ))}
               </tr>
             </thead>
-          </table>
-
-          <table className="min-w-full">
             <tbody>
               {timeSlots.map(time => (
                 <tr key={time}>
@@ -226,27 +239,34 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
                     {time.endsWith(':00') ? time : ''}</td>
                   {weekInfo.weekDays.map((day, index) => {
 
-                    const bookingExistOnDateAndTimeslot = bookings?.find(booking =>
+                    const bookingStarts = bookings?.find(booking =>
                       isBookingStartingNow(booking, day, time));
+                      
+                    const bookingOngoing = bookings?.find(booking =>
+                      isBookingOngoing(booking, day, time));
 
-
-
-                    if (bookingExistOnDateAndTimeslot) {
+                    if (bookingStarts) {
+                      
                       return (
                         <td key={`${day}-${time}`}
-                          className={`h-6 w-20 border-b-2 border-t-2 bg-green-500 rounded-md`}
-                          onClick={() => handleCellClick(time, day, bookingExistOnDateAndTimeslot)}
-                          rowSpan={4}
-                        >{bookingExistOnDateAndTimeslot.customer?.firstName} {bookingExistOnDateAndTimeslot.customer?.lastName}
-                          {bookingExistOnDateAndTimeslot.bookingStartTime} - {bookingExistOnDateAndTimeslot.bookingEndTime}</td>
+                          className={`h-6 w-20 border-b-2 border-t-2 bg-green-500 rounded-md pointer:cursor hover:bg-green-300`}
+                          onClick={() => handleCellClick(time, day, bookingStarts)}
+                          rowSpan={calculateRowSpan(bookingStarts)}
+                        >{bookingStarts.customer?.firstName} {bookingStarts.customer?.lastName}
+                          {bookingStarts.bookingStartTime} - {bookingStarts.bookingEndTime}</td>
                       )
                     }
-                    else
+                    
+                    if (!bookingStarts && !bookingOngoing){
                       return (
                         <td key={`${day}-${time}`}
                           className={`h-6 w-20 border-b-2 border-t-2 ${index == 0 ? '' : 'border-l-2'}`}
                           onClick={() => handleCellClick(time, day)}>
                         </td>)
+                    } else{
+                     return null;
+                    }
+
 
                   })}
                 </tr>
@@ -267,6 +287,13 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
                   <>
                     <ModalHeader className="flex flex-col gap-1">Booking</ModalHeader>
                     <ModalBody>
+                      <Input
+
+
+                        label="Dato" 
+                        placeholder={selectedCell.booking ? selectedCell.booking.bookingDate.toString() : selectedCell.day.toString()}
+                        variant="bordered"
+                      />
                       <Input
 
 
