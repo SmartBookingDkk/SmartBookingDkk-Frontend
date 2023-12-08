@@ -1,75 +1,105 @@
 "use client";
 
-import React, { useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { ResponsiveContext } from '@/contexts/MediaQueryContext'
+
+import Revenue from '@/components/Invoices/Revenue';
+import OutstandingInvoices from '@/components/Invoices/OutstandingInvoices';
+import PaidInvoices from '@/components/Invoices/PaidInvoices';
+import CreateInvoiceButton from '@/components/Invoices/CreateInvoiceButton';
+import { BookingInvoice } from '@/types/BookingInvoice';
+
+
 
 const InvoicePage = () => {
 
-  const { isMobile, isTablet, isDesktop } = useContext(ResponsiveContext);
-  const [selected, setSelected] = React.useState<string>('Daglig');
-  const [yearlyRevenue, setYearlyRevenue] = React.useState<number>(10000);
-  const [monthlyRevenue, setMonthlyRevenue] = React.useState<number>(1000);
-  const [weeklyRevenue, setWeeklyRevenue] = React.useState<number>(100);
-  const [dailyRevenue, setDailyRevenue] = React.useState<number>(10);
+  const [unPaidInvoices, setUnPaidInvoices] = useState<BookingInvoice[] | []>([])
+  const [paidInvoices, setPaidInvoices] = useState<BookingInvoice[] | []>([])
+
+  const getUnPaidInvoices = async () => {
+    const response = await fetch('http://localhost:8080/api/v1/invoice/unpaidInvoices/1', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    })
+    const data = await response.json()
+    setUnPaidInvoices(data)
+  }
+
+  const handleMarkAsPaid = async (id: number) => {
+    // Call the API to mark the invoice as paid (similar to your existing logic)
+    const response = await fetch(`http://localhost:8080/api/v1/invoice/markAsPaid/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+    if (response.ok) {
+      // Update the state after marking as paid
+      const updatedUnPaidInvoices = unPaidInvoices.filter((invoice: BookingInvoice) => invoice.id !== id);
+      setUnPaidInvoices(updatedUnPaidInvoices);
+
+      // Move the marked invoice to the paid invoices state
+      const markedInvoice = unPaidInvoices.find((invoice: BookingInvoice) => invoice.id === id);
+      if (markedInvoice) {
+        setPaidInvoices([...paidInvoices, markedInvoice]);
+      }
+    } else {
+      console.error('Failed to mark invoice as paid');
+    }
+  };
+
+
+  useEffect(() => {
+
+    getUnPaidInvoices()
+
+  }, [])
+
+
+
+  const getPaidInvoices = async () => {
+    const response = await fetch('http://localhost:8080/api/v1/invoice/paidInvoices/1', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    })
+    const data = await response.json()
+    setPaidInvoices(data)
+  }
+
+  useEffect(() => {
+
+      getPaidInvoices()
+    
+  }, [])
+
+
+  const handleCreateInvoice = async (newInvoice: BookingInvoice) => {
+    setUnPaidInvoices([...unPaidInvoices, newInvoice]);
+  };
+
 
   return (
-    <div>
+    <>
+      <CreateInvoiceButton  onCreateInvoice={handleCreateInvoice} />
+      <div className='flex flex-col items-center'>
+        <div>
+          <Revenue />
+        </div >
+        <div className="flex justify-center">
+          <h1 className=' mb-10 text-[24px]'>Udestående Fakturaer</h1>
+        </div>
+        <div className='flex justify-center mb-20'>
+          <OutstandingInvoices onMarkAsPaid={handleMarkAsPaid} unPaidInvoices={unPaidInvoices} />
+        </div>
+        <div className='flex justify-center'>
+          <h1 className='mb-10 text-[24px]'>Betalte Fakturaer</h1>
+        </div>
+        <div className='flex justify-center mb-20'>
+          <PaidInvoices paidInvoices={paidInvoices} />
+        </div>
+      </div>
 
-      {
-        (isDesktop || isTablet) && (
-          <div className='grid lg:grid-cols-4 md:grid-cols-2 gap-10'>
-            <div className='h-[120px] w-[220px] border border-gray-300 rounded-lg shadow-md flex flex-col items-center justify-center'>
-              <h2 className='font-semibold text-[20px] mb-4'>Daglig Omsætning</h2>
-              <div>
-                <h3 className='text-[18px]'>{dailyRevenue} Dkk,-</h3>
-              </div>
-            </div>
 
-            <div className='h-[120px] w-[220px] border border-gray-300 rounded-lg shadow-md flex flex-col items-center justify-center'>
-              <h2 className='font-semibold text-[20px] mb-4'>Ugentlig Omsætning</h2>
-              <div>
-                <h3 className='text-[18px]'>{weeklyRevenue} Dkk,-</h3>
-              </div>
-            </div>
-
-            <div className='h-[120px] w-[220px] border border-gray-300 rounded-lg shadow-md flex flex-col items-center justify-center'>
-              <h2 className='font-semibold text-[20px] mb-4'>Månedlig Omsætning</h2>
-              <div>
-                <h3 className='text-[18px]'>6969 Dkk,-</h3>
-              </div>
-            </div>
-
-            <div className='h-[120px] w-[220px] border border-gray-300 rounded-lg shadow-md flex flex-col items-center justify-center'>
-              <h2 className='font-semibold text-[20px] mb-4'>Årlig Omsætning</h2>
-              <div>
-                <h3 className='text-[18px]'>6969 Dkk,-</h3>
-              </div>
-            </div>
-          </div>
-        )
-        }
-
-        {
-          isMobile && (
-            <div>
-              <select>
-                <option>Daglig</option>
-                <option>Ugentlig</option>
-                <option>Månedlig</option>
-                <option>Årlig</option>
-              </select>
-              <div className='h-[120px] w-[220px] border border-gray-300 rounded-lg shadow-md flex flex-col items-center justify-center'>
-              <h2 className='font-semibold text-[20px] mb-4'>Daglig Omsætning</h2>
-              <div>
-                <h3 className='text-[18px]'>6969 Dkk,-</h3>
-              </div>
-            </div>
-            </div>
-          )
-        }
-
-    </div>
+    </>
 
   )
 
