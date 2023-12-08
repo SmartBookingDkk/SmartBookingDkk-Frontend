@@ -21,10 +21,10 @@ export const ResponsiveContext = createContext<ResponsiveContextType>(defaultRes
 
 
 export function ResponsiveProvider(props: any) {
-    const mobile = useMediaQuery({ query: '(max-width: 763px)' });
-    const tablet = useMediaQuery({ query: '(min-width: 764px) and (max-width: 1280px)' });
-    const desktop = useMediaQuery({ query: '(min-width: 1281px) and (max-width: 1920px)' });
-    const portrait = useMediaQuery({ query: '(orientation: portrait)' });
+    const mobile = useMediaQuery('(max-width: 763px)' );
+    const tablet = useMediaQuery('(min-width: 764px) and (max-width: 1280px)' );
+    const desktop = useMediaQuery('(min-width: 1281px) and (max-width: 1920px)' );
+    const portrait = useMediaQuery('(orientation: portrait)' );
 
     const value = {
         isMobile: mobile,
