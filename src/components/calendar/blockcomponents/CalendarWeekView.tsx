@@ -36,7 +36,7 @@ interface CalendarWeekViewProps {
 
 const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet, isDesktop, isPortrait }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [selectedCell, setSelectedCell] = useState<{ time: string; day: Date } | null>(null);
+  const [selectedCell, setSelectedCell] = useState<{ time: string; day: Date, booking?: Booking } | null>(null);
 
 
 
@@ -117,8 +117,8 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
     });
   }
 
-  const handleCellClick = (timeSlot: string, day: Date) => {
-    setSelectedCell({ time: timeSlot, day });
+  const handleCellClick = (timeSlot: string, day: Date, booking?: Booking,) => {
+    setSelectedCell({ time: timeSlot, day, booking });
     onOpen();
   };
 
@@ -204,56 +204,56 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
           <div className=''>{'Uge ' + weekInfo.weekNumber + ' - ' + weekInfo.firstDayOfWeek.getFullYear()}</div>
           <div onClick={() => handleChangeWeekClick(1)}>Næste uge {"->"}</div>
         </div>
-
-        <table className="min-w-full border-collapse border-gray-300 mb-5 mt-5">
-          <thead>
-            <tr>
-              <th className="w-14"></th>
-              {weekInfo.weekDays.map((day, index) => (
-                <th key={index} className="p-2 w-20">
-                  {daysInWeek[index] + ' ' + day.getDate() + '/' + (day.getMonth() + 1)}
-                </th>
-              ))}
-            </tr>
-          </thead>
-        </table>
-
-        <table className="min-w-full">
-          <tbody>
-            {timeSlots.map(time => (
-              <tr key={time}>
-                <td className="relative h-6 w-14 text-right -top-3 right-2">
-                  {time.endsWith(':00') ? time : ''}</td>
-                {weekInfo.weekDays.map((day, index) => {
-
-                  const bookingExistOnDateAndTimeslot = bookings?.find(booking =>
-                    isBookingStartingNow(booking, day, time));
-
-
-
-                  if (bookingExistOnDateAndTimeslot) {
-                    return (
-                      <td key={`${day}-${time}`}
-                        className={`h-6 w-20 border-b-2 border-t-2 ${index == 0 ? '' : 'border-l-2'} bg-green-500`}
-                        onClick={() => handleCellClick(time, day)}
-                        rowSpan={4}
-                      >Starts:{bookingExistOnDateAndTimeslot.bookingStartTime } <br></br>
-                      Ends: {bookingExistOnDateAndTimeslot.bookingEndTime}
-                      </td>
-                    )
-                  }
-                  else
-                    return (
-                      <td key={`${day}-${time}`}
-                        className={`h-6 w-20 border-b-2 border-t-2 ${index == 0 ? '' : 'border-l-2'}`}
-                        onClick={() => handleCellClick(time, day)}>
-                      </td>)
-
-                })}
+        <div className='w-2/3'>
+          <table className="min-w-full border-collapse border-gray-300 mb-5 mt-5">
+            <thead>
+              <tr>
+                <th className="w-14"></th>
+                {weekInfo.weekDays.map((day, index) => (
+                  <th key={index} className="p-2 w-20">
+                    {daysInWeek[index] + ' ' + day.getDate() + '/' + (day.getMonth() + 1)}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+          </table>
+
+          <table className="min-w-full">
+            <tbody>
+              {timeSlots.map(time => (
+                <tr key={time}>
+                  <td className="relative h-6 w-14 text-right -top-3 right-2">
+                    {time.endsWith(':00') ? time : ''}</td>
+                  {weekInfo.weekDays.map((day, index) => {
+
+                    const bookingExistOnDateAndTimeslot = bookings?.find(booking =>
+                      isBookingStartingNow(booking, day, time));
+
+
+
+                    if (bookingExistOnDateAndTimeslot) {
+                      return (
+                        <td key={`${day}-${time}`}
+                          className={`h-6 w-20 border-b-2 border-t-2 bg-green-500 rounded-md`}
+                          onClick={() => handleCellClick(time, day, bookingExistOnDateAndTimeslot)}
+                          rowSpan={4}
+                        >{bookingExistOnDateAndTimeslot.customer?.firstName} {bookingExistOnDateAndTimeslot.customer?.lastName}
+                          {bookingExistOnDateAndTimeslot.bookingStartTime} - {bookingExistOnDateAndTimeslot.bookingEndTime}</td>
+                      )
+                    }
+                    else
+                      return (
+                        <td key={`${day}-${time}`}
+                          className={`h-6 w-20 border-b-2 border-t-2 ${index == 0 ? '' : 'border-l-2'}`}
+                          onClick={() => handleCellClick(time, day)}>
+                        </td>)
+
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <div className='right-0'>
           {/* Render the modal outside the loop */}
           {isOpen && selectedCell && (
@@ -261,46 +261,36 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
               isOpen={isOpen}
               onOpenChange={onOpenChange}
               placement="top-center"
-              className='right-0'
             >
               <ModalContent className='right-0'>
                 {(onClose) => (
                   <>
-                    <ModalHeader className="flex flex-col gap-1">Log in</ModalHeader>
+                    <ModalHeader className="flex flex-col gap-1">Booking</ModalHeader>
                     <ModalBody>
                       <Input
-                        autoFocus
 
-                        label="Email"
-                        placeholder="Enter your email"
+
+                        label="Starttid" 
+                        placeholder={selectedCell.booking ? selectedCell.booking.bookingStartTime : selectedCell.time}
                         variant="bordered"
                       />
                       <Input
 
-                        label="Password"
-                        placeholder="Enter your password"
-                        type="password"
+                        label="Sluttid"
+                        placeholder={selectedCell.booking?.bookingEndTime}
+
                         variant="bordered"
                       />
                       <div className="flex py-2 px-1 justify-between">
-                        <Checkbox
-                          classNames={{
-                            label: "text-small",
-                          }}
-                        >
-                          Remember me
-                        </Checkbox>
-                        <Link color="primary" href="#" size="sm">
-                          Forgot password?
-                        </Link>
+
                       </div>
                     </ModalBody>
                     <ModalFooter>
                       <Button color="danger" variant="flat" onPress={onClose}>
-                        Close
+                        Annuller
                       </Button>
                       <Button color="primary" onPress={onClose}>
-                        Sign in
+                        Opdater Booking
                       </Button>
                     </ModalFooter>
                   </>
