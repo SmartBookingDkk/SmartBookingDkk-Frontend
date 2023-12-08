@@ -2,7 +2,6 @@
 
 import { NextUIProvider } from '@nextui-org/react'
 
-// Contexts
 import { ResponsiveProvider } from '@/contexts/MediaQueryContext'
 
 

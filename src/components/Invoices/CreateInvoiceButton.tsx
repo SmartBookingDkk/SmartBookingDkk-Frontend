@@ -12,12 +12,10 @@ import { BookingInvoice } from '@/types/BookingInvoice';
 
 
 type CreateInvoiceButtonProps = {
-    unPaidInvoices: BookingInvoice[] | [];
-    setUnPaidInvoices: (value: BookingInvoice[] | []) => void;
     onCreateInvoice: (newInvoice: BookingInvoice) => void;
 }
 
-const CreateInvoiceButton = ({ unPaidInvoices, setUnPaidInvoices, onCreateInvoice  }: CreateInvoiceButtonProps) => {
+const CreateInvoiceButton = ({ onCreateInvoice  }: CreateInvoiceButtonProps) => {
 
     const router = useRouter();
     const { isOpen, onOpen, onOpenChange } = useDisclosure();

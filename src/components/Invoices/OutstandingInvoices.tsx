@@ -4,21 +4,27 @@ import { BookingInvoice } from '@/types/BookingInvoice';
 import { BsThreeDots } from "react-icons/bs";
 import { FaRegTrashCan, FaRegFilePdf } from "react-icons/fa6";
 import { MdOutlinePaid } from "react-icons/md";
-
 import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/react";
+import PDFExportButton from './InvoicePDF/PDFExportButton';
+
+
+
+
 
 type OutstandingInvoicesProps = {
     unPaidInvoices: BookingInvoice[] | [];
     onMarkAsPaid: (id: number) => void;
 }
 
-const OutstandingInvoices = ({unPaidInvoices, onMarkAsPaid}: OutstandingInvoicesProps) => {
+const OutstandingInvoices = ({ unPaidInvoices, onMarkAsPaid }: OutstandingInvoicesProps) => {
 
-    
+
     const handleMarkAsPaid = async (id: number) => {
         onMarkAsPaid(id);
-      };
+    };
+
    
+
 
 
     return (
@@ -68,49 +74,51 @@ const OutstandingInvoices = ({unPaidInvoices, onMarkAsPaid}: OutstandingInvoices
                                                     <FaRegTrashCan className="mr-4" style={{ color: 'red' }} />Slet Faktura
                                                 </button>
 
+                                                
                                                 <button className='flex items-center text-[14px] py-2 hover:bg-[#f0f0f0] hover:scale-110 px-2 rounded-lg'>
-                                                    <FaRegFilePdf className="mr-4" />Eksporter PDF
-                                                </button>
+                                                <FaRegFilePdf className="mr-4" /><PDFExportButton invoice={invoice}/>
 
-                                            </div>
+                                            </button>
 
-                                        </PopoverContent>
-                                    </Popover>
+                                        </div>
 
-                                </TableCell>
+                                    </PopoverContent>
+                                </Popover>
+
+                            </TableCell>
                             </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell>
-                                Der er ingen fakturaer
-                            </TableCell>
-                            <TableCell>
-                                Der er ingen fakturaer
-                            </TableCell>
-                            <TableCell>
-                                Der er ingen fakturaer
-                            </TableCell>
-                            <TableCell>
-                                Der er ingen fakturaer
-                            </TableCell>
-                            <TableCell>
-                                Der er ingen fakturaer
-                            </TableCell>
-                            <TableCell>
-                                Der er ingen fakturaer
-                            </TableCell>
-                            <TableCell>
-                                Der er ingen fakturaer
-                            </TableCell>
-                            <TableCell>
-                                Der er ingen fakturaer
-                            </TableCell>
-                        </TableRow>
+                ))
+                ) : (
+                <TableRow>
+                    <TableCell>
+                        Der er ingen fakturaer
+                    </TableCell>
+                    <TableCell>
+                        Der er ingen fakturaer
+                    </TableCell>
+                    <TableCell>
+                        Der er ingen fakturaer
+                    </TableCell>
+                    <TableCell>
+                        Der er ingen fakturaer
+                    </TableCell>
+                    <TableCell>
+                        Der er ingen fakturaer
+                    </TableCell>
+                    <TableCell>
+                        Der er ingen fakturaer
+                    </TableCell>
+                    <TableCell>
+                        Der er ingen fakturaer
+                    </TableCell>
+                    <TableCell>
+                        Der er ingen fakturaer
+                    </TableCell>
+                </TableRow>
                     )}
-                </TableBody>
-            </Table>
-        </div>
+            </TableBody>
+        </Table>
+        </div >
     );
 };
 

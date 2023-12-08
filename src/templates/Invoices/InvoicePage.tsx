@@ -79,7 +79,7 @@ const InvoicePage = () => {
 
   return (
     <>
-      <CreateInvoiceButton  onCreateInvoice={handleCreateInvoice} unPaidInvoices={unPaidInvoices} setUnPaidInvoices={setUnPaidInvoices} />
+      <CreateInvoiceButton  onCreateInvoice={handleCreateInvoice} />
       <div className='flex flex-col items-center'>
         <div>
           <Revenue />
