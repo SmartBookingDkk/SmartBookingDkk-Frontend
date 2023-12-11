@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import getISOWeek from 'date-fns/getISOWeek';
 import startOfWeek from 'date-fns/startOfWeek';
 import endOfMonth from 'date-fns/endOfMonth';
@@ -10,9 +10,6 @@ import { addWeeks } from 'date-fns';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Checkbox, Link, Input } from "@nextui-org/react"
 import useFetchBookings from '@/hooks/fetchBookings';
 import { Booking } from '@/types/Booking';
-import { is } from 'date-fns/locale';
-
-
 
 
 const daysInWeek: string[] = ['Mandag', 'Tirdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lørdag', 'Søndag'];
@@ -47,11 +44,18 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
     lastDayOfWeek: endOfWeek(currentDate, { weekStartsOn: 1 }),
     weekNumber: getISOWeek(currentDate),
     weekDays: getWeekDays(startOfWeek(currentDate))
-  });
+  })
 
-  console.log(weekInfo)
+
+
 
   const { bookings, isLoading } = useFetchBookings(employeeId, weekInfo.firstDayOfWeek, weekInfo.lastDayOfWeek);
+
+
+
+  useEffect(() => {
+    isLoading;
+  })
 
   /**
    * Maps the days (name) of the week
@@ -87,27 +91,11 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
     * Function that handles the click on the arrows to change the month
     * @param monthSwapValue is the value that is added to the current month index, to swap the month
     */
-  /*function handleChangeWeekClick(weekSwap: number) {
-    setWeekInfo(prevWeekInfo => {
-      const newDate = addWeeks(prevWeekInfo.firstDayOfWeek, weekSwap);
-      //newDate.setDate(newDate.getDate() + weekSwap)
-      return {
-        monthsInYearIndex: newDate.getMonth(),
-        firstDayOfWeek: startOfWeek(newDate),
-        lastDayOfWeek: endOfWeek(newDate),
-        weekNumber: getISOWeek(newDate),
-        lastWeekOfMonth: getISOWeek(endOfMonth(startOfMonth(newDate))),
-        weekDays: getWeekDays(startOfWeek(newDate))
-      };
-    });
-  }*/
 
   function handleChangeWeekClick(weekSwap: number) {
     setWeekInfo(prevWeekInfo => {
       const newDate = addWeeks(new Date(prevWeekInfo.firstDayOfWeek), weekSwap);
-      console.log(newDate)
       newDate.setHours(newDate.getHours() + 1);
-      console.log(newDate)
       return {
         monthsInYearIndex: newDate.getMonth(),
         firstDayOfWeek: startOfWeek(newDate, { weekStartsOn: 1 }),
@@ -116,6 +104,7 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
         weekDays: getWeekDays(startOfWeek(newDate))
       };
     });
+
   }
 
   const handleCellClick = (timeSlot: string, day: Date, booking?: Booking,) => {
@@ -187,7 +176,7 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
   function isBookingStartingNow(booking: Booking, day: Date, timeslot: string) {
     if (booking.bookingDate.toString() == formatDateToYYYYMMDD(day)) {
       if (booking.bookingStartTime.substring(0, 4) == timeslot.substring(0, 4)) {
-        
+
         return true;
       }
     }
@@ -207,7 +196,7 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
   function calculateRowSpan(bookingStarts: Booking) {
     const startTime = new Date(`December 08, 2023 ${bookingStarts.bookingStartTime}`);
     const endTime = new Date(`December 08, 2023 ${bookingStarts.bookingEndTime}`);
-    const spanDuration = ((endTime.getTime() - startTime.getTime())/1000/60)/timeSlotSize;    
+    const spanDuration = ((endTime.getTime() - startTime.getTime()) / 1000 / 60) / timeSlotSize;
     return spanDuration;
   }
 
@@ -220,9 +209,9 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
           <div onClick={() => handleChangeWeekClick(1)}>Næste uge {"->"}</div>
         </div>
         <div className=''>
-         
+
           <table className="min-w-full">
-          <thead>
+            <thead>
               <tr>
                 <th className="w-14"></th>
                 {weekInfo.weekDays.map((day, index) => (
@@ -241,30 +230,30 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
 
                     const bookingStarts = bookings?.find(booking =>
                       isBookingStartingNow(booking, day, time));
-                      
+
                     const bookingOngoing = bookings?.find(booking =>
                       isBookingOngoing(booking, day, time));
 
                     if (bookingStarts) {
-                      
+
                       return (
                         <td key={`${day}-${time}`}
                           className={`h-6 w-20 border-b-2 border-t-2 bg-green-500 rounded-md pointer:cursor hover:bg-green-300`}
                           onClick={() => handleCellClick(time, day, bookingStarts)}
                           rowSpan={calculateRowSpan(bookingStarts)}
-                        >{bookingStarts.customer?.firstName} {bookingStarts.customer?.lastName}
+                        >{bookingStarts.customer?.firstName} {bookingStarts.customer?.lastName} <br />
                           {bookingStarts.bookingStartTime} - {bookingStarts.bookingEndTime}</td>
                       )
                     }
-                    
-                    if (!bookingStarts && !bookingOngoing){
+
+                    if (!bookingStarts && !bookingOngoing) {
                       return (
                         <td key={`${day}-${time}`}
                           className={`h-6 w-20 border-b-2 border-t-2 ${index == 0 ? '' : 'border-l-2'}`}
                           onClick={() => handleCellClick(time, day)}>
                         </td>)
-                    } else{
-                     return null;
+                    } else {
+                      return null;
                     }
 
 
@@ -285,19 +274,19 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
               <ModalContent className='right-0'>
                 {(onClose) => (
                   <>
-                    <ModalHeader className="flex flex-col gap-1">Booking</ModalHeader>
+                    <ModalHeader className="flex flex-col gap-1">{selectedCell.booking ? 'Eksisterende booking': 'Ny booking'}</ModalHeader>
                     <ModalBody>
+
+
                       <Input
-
-
-                        label="Dato" 
+                        label="Dato"
                         placeholder={selectedCell.booking ? selectedCell.booking.bookingDate.toString() : selectedCell.day.toString()}
                         variant="bordered"
                       />
                       <Input
 
 
-                        label="Starttid" 
+                        label="Starttid"
                         placeholder={selectedCell.booking ? selectedCell.booking.bookingStartTime : selectedCell.time}
                         variant="bordered"
                       />
@@ -308,6 +297,23 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
 
                         variant="bordered"
                       />
+                      <Input
+
+                        label="Navn"
+                        placeholder={
+                          selectedCell.booking ? selectedCell.booking?.customer?.firstName + ' ' + selectedCell.booking?.customer?.lastName: ''
+                        }
+
+                        variant="bordered"
+                      />
+                      <Input
+
+                        label="Kategori"
+                        placeholder={selectedCell.booking?.category?.name}
+
+                        variant="bordered"
+                      />
+
                       <div className="flex py-2 px-1 justify-between">
 
                       </div>
@@ -316,9 +322,14 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
                       <Button color="danger" variant="flat" onPress={onClose}>
                         Annuller
                       </Button>
-                      <Button color="primary" onPress={onClose}>
+
+                      {selectedCell.booking ? <Button color="primary" onPress={onClose}>
                         Opdater Booking
-                      </Button>
+                      </Button> : 
+                      <Button color="primary" onPress={onClose}>
+                      Opret Booking
+                    </Button>}
+                      
                     </ModalFooter>
                   </>
                 )}
@@ -331,6 +342,8 @@ const CalendarWeekView: React.FC<CalendarWeekViewProps> = ({ isMobile, isTablet,
     );
 
   }
+
+
 
 
 

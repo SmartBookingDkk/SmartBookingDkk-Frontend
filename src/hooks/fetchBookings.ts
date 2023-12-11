@@ -18,7 +18,7 @@ function useFetchBookings(employeeId: number, startDate: Date, endDate: Date) {
    (endDate.getDate().toString().length==1? '0' + endDate.getDate().toString(): endDate.getDate().toString());
     
 
-
+  console.log(`http://localhost:8080/booking/${employeeId}?startDate=${startDateString}&endDate=${endDateString}`)
 
   useEffect(() => {
     fetch(`http://localhost:8080/booking/${employeeId}?startDate=${startDateString}&endDate=${endDateString}`)
@@ -28,7 +28,7 @@ function useFetchBookings(employeeId: number, startDate: Date, endDate: Date) {
         setLoading(false)
       })
   }, [])
-
+  console.log(bookings)
   return { bookings, isLoading }
 }
 
