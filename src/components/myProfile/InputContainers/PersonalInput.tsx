@@ -1,10 +1,11 @@
 import { Customer } from "@/types/Customer";
+import { Employee } from "@/types/Employee";
 import { Input } from "@nextui-org/input";
 import { Divider } from "@nextui-org/react";
 
 interface PersonalInputProps {
-    user: Customer;
-    setUser: React.Dispatch<Customer>;
+    user: Customer | Employee;
+    setUser: React.Dispatch<Customer | Employee>;
 }
 
 export const PersonalInput = ({ user, setUser }: PersonalInputProps) => {

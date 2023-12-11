@@ -10,8 +10,7 @@ export type Employee = {
     lastName: string;
     phone: string;
     user: User;
-    business: Business | null;
-    customers: Customer[] | null;
+    business: Business | null;    
     address: Address;
     bookings: Booking[] | null;
     createdDate: Date;
