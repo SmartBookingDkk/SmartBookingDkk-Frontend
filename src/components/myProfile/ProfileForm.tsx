@@ -2,48 +2,37 @@ import { Customer } from "@/types/Customer";
 import { AddressInput } from "./InputContainers/AddressInput";
 import { PersonalInput } from "./InputContainers/PersonalInput";
 import { Divider } from "@nextui-org/react";
+import { fetchPut } from "@/utility/fetch/fetchPut";
+import { Employee } from "@/types/Employee";
 
-interface ProfileFormProps {
-    user: Customer;
-    setUser: React.Dispatch<Customer>;
+interface ProfileFormProps<T> {
+    user: T;
+    setUser: React.Dispatch<React.SetStateAction<T>>;
+    submitUrl: string;
 }
 
-const ProfileForm = ({ user, setUser }: ProfileFormProps) => {
+const ProfileForm= ({ user, setUser, submitUrl }: ProfileFormProps<Customer | Employee | null>) => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        try {
-            const response = await fetch("http://localhost:8080/customer", {
-                method: "PUT",
-                //mode: "cors", // no-cors, *cors, same-origin
-                credentials: "include", // include, *same-origin, omit
-                headers: {
-                    "Content-Type": "application/json",
-                    // 'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: JSON.stringify(user),
-            });
 
-            if (response.ok) {
-                console.log("User data updated successfully: ", await response.json());
-            } else {
-                console.error("Failed to update user data");
-            }
-        } catch (error) {
-            console.error("An error occurred:", error);
-        }
+        if (!user) return;
+
+        console.log("PROFILEFORM FETCHPUT RETURN: ", await fetchPut(submitUrl, user));
     }
 
     return (
         <form onSubmit={handleSubmit} className="m-4">
-            
-                <PersonalInput user={user} setUser={setUser} />
+
+            {user && <>
+                {user.user && <PersonalInput user={user} setUser={setUser} />}
 
                 <AddressInput user={user} setUser={setUser} />
                 <div className="flex justify-center m-8">
                     <button className="btn-primary capitalize mb-8" type="submit">gem mine ændringer</button>
                 </div>
-            
+            </>}
+
         </form>
     )
 }
